@@ -7,6 +7,15 @@ argument-hint: (no args — processes every pipeline item with Status = Execute)
 
 Query the Notion Lead Magnet Pipeline database for items with status "Execute", then build the marketing assets for each one.
 
+## Brand & Audience (read FIRST)
+Read **lead-magnet-system/reference/brand.md** and follow it strictly when
+writing every landing page and email:
+- Positioning is **Business Coach for Creatives + Event-Based Business Owners** —
+  never "mindset coach." Use `{{HOST_TITLE}}` in the trust bar.
+- Write to owners who already have clients/revenue but keep **hitting the same
+  income ceiling** — never to beginners, hobbyists, or survival-mode readers.
+- Use the income-ceiling language and avoid the banned words in brand.md.
+
 ## Design System
 Read these before building anything:
 - lead-magnet-system/reference/conversion-landing-sample.html

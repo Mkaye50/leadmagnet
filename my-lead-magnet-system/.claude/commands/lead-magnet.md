@@ -9,6 +9,17 @@ Research and create a lead magnet for the topic: **$ARGUMENTS**
 
 This command creates the lead magnet content as a Notion page and enters it into the pipeline. It does NOT generate any HTML files, PDFs, or emails. Those are built later by /execute-lead-magnets after you review and approve.
 
+## Brand & Audience (read FIRST)
+Read **lead-magnet-system/reference/brand.md** before writing anything and
+follow it strictly. The essentials:
+- **Positioning:** Michal Kaye is a **Business Coach for Creatives + Event-Based
+  Business Owners**. NEVER call her a "mindset coach" / "business mindset coach."
+- **Audience:** owners who already have clients and revenue but keep **hitting
+  the same income ceiling**. Write to them — NOT to beginners, hobbyists, or
+  people in survival mode.
+- **Use** the income-ceiling language and **avoid** the banned words listed in
+  brand.md (e.g. clarity, foundations, scale, strategies, hustle, transformation).
+
 ---
 
 ## Pipeline -- Follow these steps in order:
