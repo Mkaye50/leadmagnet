@@ -1,65 +1,73 @@
 ---
-description: Generate a complete lead-magnet PDF (content + design) from a topic
-argument-hint: <topic or angle, e.g. "SEO checklist for local restaurants">
-allowed-tools: Read, Write, Edit, Bash, Glob
+description: Research a topic and create a lead-magnet content page in Notion + a pipeline entry
+argument-hint: <topic, e.g. "email list growth for coaches">
 ---
 
-# /lead-magnet
+# Lead Magnet Generator
 
-Create a polished, ready-to-print lead-magnet PDF for the following topic:
+Research and create a lead magnet for the topic: **$ARGUMENTS**
 
-> **$ARGUMENTS**
+This command creates the lead magnet content as a Notion page and enters it into the pipeline. It does NOT generate any HTML files, PDFs, or emails. Those are built later by /execute-lead-magnets after you review and approve.
 
-If `$ARGUMENTS` is empty, ask the user for the topic, target audience, and the
-brand/website before doing anything else.
+---
 
-## Goal
+## Pipeline -- Follow these steps in order:
 
-A lead magnet is a valuable, skimmable free resource (guide, checklist,
-playbook, template) offered in exchange for an email address. Your job is to
-produce both the **copy** and a **designed HTML file** that converts cleanly to
-PDF.
+### Step 1: Research the Topic
+Use web search to deeply research "$ARGUMENTS". Find:
+- 5-7 key insights, stats, or actionable tips
+- Common pain points the audience faces
+- What makes this topic valuable/urgent right now
+- Any relevant data points or case studies
 
-## Process
+Compile your research into a structured outline with a compelling title and subtitle.
 
-1. **Clarify the brief.** From the topic, determine:
-   - Target audience and the single painful problem this solves.
-   - The promise / outcome (what they'll be able to do after reading).
-   - Brand name, website, and CTA (where you'll ask them to go next).
-   - A short, benefit-driven title and subtitle.
-   Make reasonable assumptions and state them — don't stall on missing details.
+### Step 2: Write the Lead Magnet Content
+Based on your research, write the full lead magnet as structured content:
 
-2. **Study the reference design.** Read
-   `lead-magnet-system/reference/lead-magnet-template.html`. This is the visual
-   baseline. Preserve its structure: cover page, intro page, a numbered "steps"
-   page, and a checklist + CTA page. Keep the `@page`, `.page`, and `.cover`
-   CSS intact so PDF output stays correct.
+- **Title** -- clear, benefit-driven
+- **Subtitle** -- one line expanding on the title
+- **Introduction** -- why this matters (1-2 paragraphs)
+- **Main content** -- 5-7 sections, each with:
+  - Section heading
+  - Actionable insight or step
+  - Specific examples, stats, or how-to details
+- **Summary/Checklist** -- quick reference takeaways
+- **CTA** -- next steps + follow @itsmichalkaye on social
 
-3. **Write genuinely useful content.** No filler. Each step should be concrete
-   and actionable. The checklist should be a true "do this" list. Aim for
-   tight, confident, plain language. Replace every `{{TOKEN}}` in the template
-   with real copy (or remove sections you don't need).
+Write in YOUR BRAND VOICE: Honest. Funny. Professional but never stiff. Language is simple, grade-5 English.
 
-4. **Pick a slug.** Kebab-case from the title, e.g. `local-seo-checklist`.
+### Step 3: Create the Notion Content Page
+Create a separate Notion page (NOT inside the pipeline database) with the full lead magnet content from Step 2. This page IS the deliverable that subscribers will receive access to.
 
-5. **Write the file** to:
-   `lead-magnet-system/output/<slug>.html`
-   (Create the `output/` directory if it doesn't exist.)
+Use rich Notion formatting:
+- Headings for sections
+- Bulleted/numbered lists for steps
+- Callout blocks for key takeaways
+- Dividers between major sections
 
-6. **Generate the PDF:**
-   ```bash
-   npm run pdf -- lead-magnet-system/output/<slug>.html
-   ```
-   This writes `lead-magnet-system/output/<slug>.pdf`.
+### Step 4: Create the Pipeline Entry
+Add an entry in the Lead Magnet Pipeline Notion database:
+- **Data Source ID:** `<YOUR_NOTION_PIPELINE_DATA_SOURCE_ID>`
+  (the database/data-source ID — a UUID like `1a2b3c4d-5e6f-...`, NOT a Notion
+  API token. The Notion integration token is configured in your MCP server
+  settings and must never be committed to this repo.)
 
-7. **Report back** with: the title, the slug, the file paths created, the
-   assumptions you made, and a one-line suggestion for the matching landing
-   page (the user can run `/landing-page <slug>` next).
+Set these properties:
+- **Name** -- the lead magnet title
+- **Status** -- "Draft"
+- **Format** -- "Notion"
+- **Slug** -- URL-friendly slug generated from the title
+- **Topic** -- "$ARGUMENTS"
+- **Notion URL** -- link to the content page created in Step 3
 
-## Quality bar
-
-- The cover must look like a designed product, not a wall of text.
-- Tailor the color (`--brand`) to the brand if one is known.
-- Content must be accurate and specific to the audience — avoid generic advice.
-- Verify the PDF was created (check the file exists); if Puppeteer fails,
-  surface the error and the fix (often `npm install`).
+### Step 5: Summary
+Output a summary with:
+- Lead magnet title and slug
+- Link to the Notion content page
+- Link to the pipeline entry
+- Remind user to:
+  1. Review and edit the content page in Notion
+  2. Set Format to "Notion", "PDF", or "Both"
+  3. Change Status to "Execute" when ready
+  4. Run /execute-lead-magnets to generate the landing page and email
