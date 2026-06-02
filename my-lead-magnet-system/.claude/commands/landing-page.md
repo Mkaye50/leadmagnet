@@ -54,7 +54,7 @@ Sections in order:
 6. **Footer** -- copyright line
 
 Form Integration:
-- Webhook URL: {{FLODESK_WEBHOOK_URL}}
+- Webhook URL: https://eo36rlwfvxbu6vy.m.pipedream.net
 - Segment/Lead Magnet Tag: {{SEGMENT_ID_OR_TAG}}
 - JavaScript: validate fields, POST FormData to webhook, include lead_magnet, segment/tag, name, email, and dropdown answer in the payload, then show success state.
 

@@ -16,9 +16,9 @@
     Lead magnet: The Confident Pricing Guide for Creatives  (Format: Notion)
     Delivery: opt-in -> email with the Notion page link.
 
-    TODO before going live: replace {{FLODESK_WEBHOOK_URL}} and
-    {{SEGMENT_ID_OR_TAG}} with this magnet's Flodesk values, and set
-    {{HOST_PHOTO_URL}} to a real headshot. No real keys are committed.
+    Webhook URL: live (Pipedream). TODO before going live: replace
+    {{SEGMENT_ID_OR_TAG}} with this magnet's segment/tag, and set
+    {{HOST_PHOTO_URL}} to a real headshot.
   -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -334,7 +334,7 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     (function () {
-      const WEBHOOK_URL = "{{FLODESK_WEBHOOK_URL}}";
+      const WEBHOOK_URL = "https://eo36rlwfvxbu6vy.m.pipedream.net";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
