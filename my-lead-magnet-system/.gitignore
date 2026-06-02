@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+
+# Generated artifacts — keep the source HTML, ignore built PDFs by default.
+# Comment the next line out if you want to commit generated PDFs.
+lead-magnet-system/output/*.pdf
+website/lead-magnets/**/downloads/*.pdf

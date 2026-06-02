@@ -1,0 +1,24 @@
+{
+  "name": "my-lead-magnet-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Claude Code-driven system for generating lead-magnet PDFs and their landing pages.",
+  "type": "module",
+  "scripts": {
+    "pdf": "node lead-magnet-system/scripts/generate-pdf.js",
+    "pdf:all": "node lead-magnet-system/scripts/generate-pdf.js --all",
+    "serve": "node lead-magnet-system/scripts/serve.js"
+  },
+  "keywords": [
+    "lead-magnet",
+    "pdf",
+    "landing-page",
+    "marketing",
+    "claude-code"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^23.0.0"
+  }
+}
