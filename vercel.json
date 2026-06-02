@@ -1,0 +1,10 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/pricing-guide",
+      "destination": "/my-lead-magnet-system/website/lead-magnets/confident-pricing-guide-for-creatives.html"
+    }
+  ]
+}
