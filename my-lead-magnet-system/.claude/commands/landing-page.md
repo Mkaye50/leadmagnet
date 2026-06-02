@@ -1,82 +1,71 @@
 ---
-description: Generate a landing page for one Lead Magnet Pipeline entry (from its Notion content)
-argument-hint: <slug or lead-magnet name from the pipeline>
+description: Generate a conversion-optimized opt-in landing page (self-contained HTML) for a topic
+argument-hint: <topic, e.g. "30-day content calendar for coaches">
 ---
 
-# /landing-page
+# Landing Page Generator
 
-Build a responsive email-capture landing page for a single lead magnet that
-already exists in the **Lead Magnet Pipeline** Notion database.
+Generate a conversion-optimized opt-in landing page for: **$ARGUMENTS**
 
-> **$ARGUMENTS**
+## Design System
+Read these before building anything:
+- lead-magnet-system/reference/conversion-landing-sample.html
 
-This is the standalone, single-entry version of the landing-page step that
-`/execute-lead-magnets` runs in batch. Use it to (re)build one page.
+The reference file is the exact visual pattern to match.
 
-## Pipeline database
+---
 
-- **Database ID:** `373f96051aee80ee9634ec39fb0e0038`
-- **Database URL:** https://www.notion.so/373f96051aee80ee9634ec39fb0e0038
-- **Fields:** `Name`, `Status`, `Format`, `Slug`, `Topic`, `Notion URL`
+## Pipeline:
 
-(The database ID above is a plain UUID, not a secret. The Notion integration
-token is configured in MCP settings and must never be committed.)
+### Step 1: Research the Topic
+Use web search to research "$ARGUMENTS". Find:
+- Core value proposition and what makes this topic compelling
+- 3-5 specific pain points the audience faces
+- Concrete outcomes/benefits to feature in copy
+- Any relevant stats or social proof angles
 
-## Process — follow in order
+### Step 2: Build the Landing Page
+Create the landing page at website/lead-magnets/[slug].html.
 
-### Step 1: Find the pipeline entry
-Query the Lead Magnet Pipeline database via the Notion MCP tools. Match
-`$ARGUMENTS` against `Slug` first, then `Name`. If `$ARGUMENTS` is empty or no
-match is found, list the available entries (Name + Slug + Status) and ask the
-user which one to build.
+Requirements:
+- Pure CSS with variables (no Tailwind CDN)
+- Cormorant Garamond- title , Manrope- body, DM Sans- navigation buttons,  via Google Fonts / CDN
+- Full light/dark theme support with localStorage persistence
+- Accessible: contrast ratios, alt text, focus states
 
-### Step 2: Read the content page
-Open the page referenced by the entry's **Notion URL** and read its full
-content (title, subtitle, intro, sections, checklist, CTA). This copy is the
-source of truth for the landing page — do not invent new claims.
+Important:
+Do not hardcode webhook keys or segment IDs into this command.
+Use placeholders so each lead magnet can route to the correct Flodesk segment at generation time.
 
-### Step 3: Generate the landing page HTML
-Read the reference design at
-`lead-magnet-system/reference/landing-page-template.html` and keep its
-structure (hero + cover mockup, email-capture form card, three benefit cards,
-footer CTA) and its responsive `@media (max-width: 760px)` rules.
+Sections in order:
+1. **Nav Bar** -- fixed, blur backdrop, logo + theme toggle
+2. **Hero** -- trust bar (your photo + name + follower count), eyebrow "FREE DOWNLOAD", H1 headline, subhead, value pills, benefits list
+3. **Form Card** -- name input, email input, optional qualifying dropdown, submit button, micro-trust icons (no spam, unsubscribe anytime, instant delivery)
+4. **FAQ Section** -- 3-4 questions specific to the topic
+5. **Final CTA Card** -- inverted card with heading + button
+6. **Footer** -- copyright line
 
-Fill every `{{TOKEN}}` with conversion-focused copy derived from the Notion
-content:
-- Headline + subheadline from the title/subtitle.
-- Three concrete benefits (outcomes, not features) from the main sections.
-- `{{TITLE}}`, `{{BADGE}}`, `{{COVER_DESCRIPTION}}` for the cover mockup.
-- Keep the brand voice: honest, a little funny, plain grade-5 English.
-- Leave NO `{{TOKEN}}` unresolved.
+Form Integration:
+- Webhook URL: {{FLODESK_WEBHOOK_URL}}
+- Segment/Lead Magnet Tag: {{SEGMENT_ID_OR_TAG}}
+- JavaScript: validate fields, POST FormData to webhook, include lead_magnet, segment/tag, name, email, and dropdown answer in the payload, then show success state.
 
-### Step 4: Wire delivery based on Format
-Read the entry's **Format** field and set the form's delivery accordingly:
-- **Notion** → after submit, deliver the public Notion page URL (the page is
-  the asset). Set `{{FORM_ACTION}}` to your ESP endpoint and note that the
-  success/thank-you step links to the Notion URL.
-- **PDF** → deliver `downloads/<slug>.pdf` from this page's folder.
-- **Both** → offer the Notion page as the primary read and the PDF as a
-  downloadable copy.
-Leave a clear HTML comment at `{{FORM_ACTION}}` telling the user where to plug
-in ConvertKit / Mailchimp / Beehiiv / a serverless endpoint.
+### Step 3: Write Delivery Email
+Write the plain text delivery email. Save to website/lead-magnets/[slug]-email.txt.
 
-### Step 5: Write the files
-Write the page to:
-`website/lead-magnets/<slug>/index.html`
+Structure:
+- Subject line (short, specific to the topic)
+- Hey {{contact.first_name}},
+- Opening: 1-2 sentences about what they are getting
+- Middle: why this content is valuable
+- Closing: tell them to follow you for more content
+- Sign off with your name
+- PS: invite them to reply with questions
 
-If Format is PDF or Both and a PDF exists at
-`lead-magnet-system/output/<slug>.pdf`, copy it to
-`website/lead-magnets/<slug>/downloads/<slug>.pdf` so the page is
-self-contained. (If no PDF exists yet, note that `/execute-lead-magnets` will
-generate it.)
+### Step 4: Deploy
+1. git add website/lead-magnets/[slug].html website/lead-magnets/[slug]-email.txt
+2. git commit -m "Add [title] lead magnet landing page"
+3. git push
 
-### Step 6: Report back
-Output: the slug, the page path, the public URL it should live at
-(`/lead-magnets/<slug>/`), the Format used, and the `{{FORM_ACTION}}` that
-still needs wiring.
-
-## Notes
-- This command does NOT change the pipeline `Status`; that's owned by
-  `/execute-lead-magnets`. It only (re)builds the landing-page file.
-- Preview locally with `npm run serve` →
-  `http://localhost:4321/website/lead-magnets/<slug>/`.
+### Step 5: Summary
+Output: page title, slug, files created, live URL, and remind user to paste the email into their CRM automation.
