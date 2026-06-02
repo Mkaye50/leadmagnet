@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{TITLE}} — Free Download</title>
+  <meta name="description" content="{{META_DESCRIPTION}}" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{TITLE}}" />
+  <meta property="og:description" content="{{META_DESCRIPTION}}" />
+  <meta property="og:type" content="website" />
+
+  <!--
+    ============================================================================
+    CONVERSION LANDING SAMPLE  —  reference design / fill-in template
+    ============================================================================
+    This is THE visual pattern the /landing-page and /execute-lead-magnets
+    commands match. To build a real page: copy this file to
+    website/lead-magnets/<slug>.html and replace every {{TOKEN}}.
+
+    Type system:
+      - Cormorant Garamond  → titles / headings
+      - Manrope             → body copy
+      - DM Sans             → nav + buttons
+
+    Theme: light/dark via [data-theme] + CSS variables, persisted in
+    localStorage (key: "theme"), falling back to prefers-color-scheme.
+
+    Form: posts FormData to {{FLODESK_WEBHOOK_URL}} with the lead_magnet name,
+    segment/tag {{SEGMENT_ID_OR_TAG}}, first name, email, and the qualifying
+    dropdown answer. Do NOT hardcode real Flodesk keys here — keep the
+    placeholders so each magnet routes to its own segment at generation time.
+    ============================================================================
+  -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ---------- Theme tokens ---------- */
+    :root {
+      --font-title: "Cormorant Garamond", Georgia, serif;
+      --font-body: "Manrope", system-ui, sans-serif;
+      --font-ui: "DM Sans", system-ui, sans-serif;
+
+      --bg: #fbfaf7;
+      --surface: #ffffff;
+      --surface-2: #f4f1ea;
+      --ink: #1a1714;
+      --ink-soft: #5c554c;
+      --line: #e6e1d6;
+      --brand: #b4541f;       /* warm terracotta */
+      --brand-ink: #ffffff;
+      --accent: #2f6b5e;      /* deep green */
+      --ring: rgba(180, 84, 31, 0.45);
+      --shadow: 0 24px 60px rgba(26, 23, 20, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --bg: #14110e;
+      --surface: #1d1916;
+      --surface-2: #241f1b;
+      --ink: #f5f1ea;
+      --ink-soft: #b6ab9c;
+      --line: #342d27;
+      --brand: #e08a4f;
+      --brand-ink: #1a1714;
+      --accent: #74c2af;
+      --ring: rgba(224, 138, 79, 0.5);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .wrap { width: min(1080px, 92vw); margin: 0 auto; }
+
+    h1, h2, h3 { font-family: var(--font-title); font-weight: 600; line-height: 1.1; }
+
+    a { color: var(--brand); }
+
+    /* Visible focus for keyboard users */
+    :focus-visible {
+      outline: 3px solid var(--ring);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* ---------- Nav ---------- */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      backdrop-filter: saturate(160%) blur(12px);
+      -webkit-backdrop-filter: saturate(160%) blur(12px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-family: var(--font-title);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .theme-toggle {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.05s ease;
+    }
+    .theme-toggle:hover { border-color: var(--brand); }
+    .theme-toggle:active { transform: translateY(1px); }
+    .theme-toggle .moon { display: none; }
+    [data-theme="dark"] .theme-toggle .sun { display: none; }
+    [data-theme="dark"] .theme-toggle .moon { display: inline; }
+
+    /* ---------- Hero ---------- */
+    .hero { padding: 128px 0 56px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .trust-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px 8px 8px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+    }
+    .trust-bar img {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brand);
+    }
+    .trust-bar .who { font-family: var(--font-ui); font-size: 13px; line-height: 1.25; }
+    .trust-bar .who strong { display: block; color: var(--ink); }
+    .trust-bar .who span { color: var(--ink-soft); }
+
+    .eyebrow {
+      font-family: var(--font-ui);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--brand);
+      margin: 26px 0 12px;
+    }
+    .hero h1 { font-size: clamp(40px, 6vw, 62px); color: var(--ink); }
+    .hero .subhead {
+      font-size: 19px;
+      color: var(--ink-soft);
+      margin: 18px 0 22px;
+      max-width: 34ch;
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+    .pill {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .benefits { list-style: none; display: grid; gap: 12px; }
+    .benefits li {
+      position: relative;
+      padding-left: 32px;
+      color: var(--ink);
+    }
+    .benefits li::before {
+      content: "✓";
+      position: absolute;
+      left: 0; top: 1px;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* ---------- Form card ---------- */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 88px;
+    }
+    .form-card h2 { font-size: 30px; color: var(--ink); }
+    .form-card .hint { font-family: var(--font-ui); color: var(--ink-soft); font-size: 14px; margin: 6px 0 20px; }
+
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 16px;
+      padding: 13px 14px;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+    .field .error-text {
+      display: none;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: #c0392b;
+      margin-top: 5px;
+    }
+    .field.invalid input,
+    .field.invalid select { border-color: #c0392b; }
+    .field.invalid .error-text { display: block; }
+
+    .submit-btn {
+      width: 100%;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 15px;
+      margin-top: 6px;
+      color: var(--brand-ink);
+      background: var(--brand);
+      border: none;
+      border-radius: 11px;
+      cursor: pointer;
+      transition: filter 0.2s ease, transform 0.05s ease;
+    }
+    .submit-btn:hover { filter: brightness(1.06); }
+    .submit-btn:active { transform: translateY(1px); }
+    .submit-btn[disabled] { opacity: 0.6; cursor: progress; }
+
+    .micro-trust {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .micro-trust span { display: inline-flex; align-items: center; gap: 5px; }
+
+    /* Success state */
+    .form-success { display: none; text-align: center; padding: 12px 0; }
+    .form-card.done .form-body { display: none; }
+    .form-card.done .form-success { display: block; }
+    .form-success .check {
+      width: 56px; height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .form-success h2 { color: var(--ink); }
+    .form-success p { font-family: var(--font-ui); color: var(--ink-soft); margin-top: 8px; }
+
+    /* ---------- FAQ ---------- */
+    .section { padding: 64px 0; }
+    .section-title { text-align: center; font-size: clamp(30px, 4vw, 42px); color: var(--ink); margin-bottom: 8px; }
+    .section-lead { text-align: center; font-family: var(--font-ui); color: var(--ink-soft); margin-bottom: 36px; }
+
+    .faq { max-width: 760px; margin: 0 auto; }
+    .faq details {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq summary {
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 17px;
+      color: var(--ink);
+      padding: 18px 22px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-size: 22px; color: var(--brand); transition: transform 0.2s ease; }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq .answer { padding: 0 22px 20px; color: var(--ink-soft); }
+
+    /* ---------- Final CTA (inverted) ---------- */
+    .final-cta { padding: 32px 0 72px; }
+    .cta-card {
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: 24px;
+      padding: 56px 40px;
+      text-align: center;
+    }
+    [data-theme="dark"] .cta-card { background: var(--surface-2); color: var(--ink); }
+    .cta-card h2 { font-size: clamp(30px, 4.5vw, 46px); }
+    .cta-card p { font-family: var(--font-ui); opacity: 0.85; margin: 12px auto 24px; max-width: 46ch; }
+    .cta-card .cta-btn {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 16px;
+      display: inline-block;
+      padding: 15px 34px;
+      background: var(--brand);
+      color: var(--brand-ink);
+      border-radius: 999px;
+      text-decoration: none;
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0;
+      text-align: center;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 820px) {
+      .hero { padding: 104px 0 40px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .form-card { position: static; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="logo" href="/">{{BRAND_NAME}}</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <span class="sun">☀︎ Light</span>
+        <span class="moon">☾ Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ HERO + FORM ============ -->
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <!-- Left: copy -->
+        <div>
+          <div class="trust-bar">
+            <img src="{{HOST_PHOTO_URL}}" alt="Photo of {{HOST_NAME}}" />
+            <div class="who">
+              <strong>{{HOST_NAME}}</strong>
+              <span>{{FOLLOWER_COUNT}} followers · {{HOST_HANDLE}}</span>
+            </div>
+          </div>
+
+          <p class="eyebrow">Free Download</p>
+          <h1>{{HEADLINE}}</h1>
+          <p class="subhead">{{SUBHEAD}}</p>
+
+          <div class="pills">
+            <span class="pill">{{PILL_1}}</span>
+            <span class="pill">{{PILL_2}}</span>
+            <span class="pill">{{PILL_3}}</span>
+          </div>
+
+          <ul class="benefits">
+            <li>{{BENEFIT_1}}</li>
+            <li>{{BENEFIT_2}}</li>
+            <li>{{BENEFIT_3}}</li>
+            <li>{{BENEFIT_4}}</li>
+          </ul>
+        </div>
+
+        <!-- Right: form card -->
+        <div class="form-card" id="formCard">
+          <div class="form-body">
+            <h2>{{FORM_HEADING}}</h2>
+            <p class="hint">{{FORM_HINT}}</p>
+
+            <form id="leadForm" novalidate>
+              <!-- Hidden routing fields -->
+              <input type="hidden" name="lead_magnet" value="{{LEAD_MAGNET_NAME}}" />
+              <input type="hidden" name="segment" value="{{SEGMENT_ID_OR_TAG}}" />
+
+              <div class="field" id="f-name">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" autocomplete="given-name" placeholder="Jordan" required />
+                <p class="error-text">Please enter your first name.</p>
+              </div>
+
+              <div class="field" id="f-email">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+                <p class="error-text">Please enter a valid email.</p>
+              </div>
+
+              <!-- Optional qualifying dropdown -->
+              <div class="field" id="f-qualify">
+                <label for="qualifier">{{QUALIFIER_LABEL}}</label>
+                <select id="qualifier" name="qualifier">
+                  <option value="">{{QUALIFIER_PLACEHOLDER}}</option>
+                  <option value="{{QUALIFIER_OPT_1}}">{{QUALIFIER_OPT_1}}</option>
+                  <option value="{{QUALIFIER_OPT_2}}">{{QUALIFIER_OPT_2}}</option>
+                  <option value="{{QUALIFIER_OPT_3}}">{{QUALIFIER_OPT_3}}</option>
+                </select>
+              </div>
+
+              <button type="submit" class="submit-btn" id="submitBtn">{{CTA_BUTTON}}</button>
+
+              <div class="micro-trust">
+                <span>🔒 No spam</span>
+                <span>↩︎ Unsubscribe anytime</span>
+                <span>⚡ Instant delivery</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Success state -->
+          <div class="form-success" role="status" aria-live="polite">
+            <div class="check">✓</div>
+            <h2>{{SUCCESS_HEADING}}</h2>
+            <p>{{SUCCESS_BODY}}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section" id="faq">
+      <div class="wrap">
+        <h2 class="section-title">Questions?</h2>
+        <p class="section-lead">{{FAQ_LEAD}}</p>
+        <div class="faq">
+          <details open>
+            <summary>{{FAQ_Q1}}</summary>
+            <div class="answer">{{FAQ_A1}}</div>
+          </details>
+          <details>
+            <summary>{{FAQ_Q2}}</summary>
+            <div class="answer">{{FAQ_A2}}</div>
+          </details>
+          <details>
+            <summary>{{FAQ_Q3}}</summary>
+            <div class="answer">{{FAQ_A3}}</div>
+          </details>
+          <details>
+            <summary>{{FAQ_Q4}}</summary>
+            <div class="answer">{{FAQ_A4}}</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="final-cta">
+      <div class="wrap">
+        <div class="cta-card">
+          <h2>{{FINAL_CTA_HEADING}}</h2>
+          <p>{{FINAL_CTA_BODY}}</p>
+          <a class="cta-btn" href="#formCard">{{CTA_BUTTON}}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap">© <span id="year"></span> {{BRAND_NAME}}. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // ---------- Theme: persisted in localStorage, prefers-color-scheme fallback ----------
+    (function () {
+      const root = document.documentElement;
+      const saved = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.setAttribute("data-theme", saved || (prefersDark ? "dark" : "light"));
+
+      const toggle = document.getElementById("themeToggle");
+      toggle.addEventListener("click", function () {
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+        toggle.setAttribute("aria-pressed", String(next === "dark"));
+      });
+    })();
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ---------- Form: validate + POST to Flodesk webhook + success state ----------
+    (function () {
+      // Replaced at generation time. Keep placeholders in the reference file.
+      const WEBHOOK_URL = "{{FLODESK_WEBHOOK_URL}}";
+
+      const form = document.getElementById("leadForm");
+      const card = document.getElementById("formCard");
+      const submitBtn = document.getElementById("submitBtn");
+
+      function setInvalid(fieldId, invalid) {
+        document.getElementById(fieldId).classList.toggle("invalid", invalid);
+      }
+
+      function validEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = form.first_name.value.trim();
+        const email = form.email.value.trim();
+
+        const nameBad = name.length === 0;
+        const emailBad = !validEmail(email);
+        setInvalid("f-name", nameBad);
+        setInvalid("f-email", emailBad);
+        if (nameBad || emailBad) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+
+        try {
+          const data = new FormData(form); // lead_magnet, segment, first_name, email, qualifier
+          await fetch(WEBHOOK_URL, { method: "POST", body: data });
+          // Most form webhooks accept the POST without CORS-readable responses;
+          // treat a completed request as success.
+          card.classList.add("done");
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "{{CTA_BUTTON}}";
+          alert("Something went wrong sending the form. Please try again.");
+          console.error(err);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
