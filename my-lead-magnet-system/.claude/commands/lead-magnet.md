@@ -47,11 +47,11 @@ Use rich Notion formatting:
 - Dividers between major sections
 
 ### Step 4: Create the Pipeline Entry
-Add an entry in the Lead Magnet Pipeline Notion database:
-- **Data Source ID:** `<YOUR_NOTION_PIPELINE_DATA_SOURCE_ID>`
-  (the database/data-source ID — a UUID like `1a2b3c4d-5e6f-...`, NOT a Notion
-  API token. The Notion integration token is configured in your MCP server
-  settings and must never be committed to this repo.)
+Add an entry in the **Lead Magnet Pipeline** Notion database:
+- **Database ID:** `373f96051aee80ee9634ec39fb0e0038`
+- **Database URL:** https://www.notion.so/373f96051aee80ee9634ec39fb0e0038
+  (This is the database ID, a plain UUID — NOT a Notion API token. The
+  integration token lives in your MCP server settings and is never committed.)
 
 Set these properties:
 - **Name** -- the lead magnet title
