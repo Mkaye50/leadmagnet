@@ -27,10 +27,11 @@
     Theme: light/dark via [data-theme] + CSS variables, persisted in
     localStorage (key: "theme"), falling back to prefers-color-scheme.
 
-    Form: posts FormData to {{FLODESK_WEBHOOK_URL}} with the lead_magnet name,
-    segment/tag {{SEGMENT_ID_OR_TAG}}, first name, email, and the qualifying
-    dropdown answer. Do NOT hardcode real Flodesk keys here — keep the
-    placeholders so each magnet routes to its own segment at generation time.
+    Form: posts FormData to the live Pipedream webhook (pre-filled below) with
+    the lead_magnet name, segment/tag {{SEGMENT_ID_OR_TAG}}, first name, email,
+    and the qualifying dropdown answer. The webhook URL is shared across pages;
+    keep {{SEGMENT_ID_OR_TAG}} as a placeholder so each magnet routes to its own
+    segment at generation time. Never hardcode secret API keys here.
     ============================================================================
   -->
 
@@ -560,7 +561,7 @@
     // ---------- Form: validate + POST to Flodesk webhook + success state ----------
     (function () {
       // Replaced at generation time. Keep placeholders in the reference file.
-      const WEBHOOK_URL = "{{FLODESK_WEBHOOK_URL}}";
+      const WEBHOOK_URL = "https://eo36rlwfvxbu6vy.m.pipedream.net";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
