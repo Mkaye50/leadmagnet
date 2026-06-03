@@ -409,9 +409,10 @@
     /* Aqua accent circles need a dark glyph to stay readable (not white-on-aqua) */
     .benefits li::before,
     .form-success .check { color: #2D3748; }
-    /* Pink CTA buttons: white text sized to qualify as WCAG "large" text (>=18.66px bold) */
+    /* Buttons use a darkened pink #D81C6D so white text passes AA at normal size (4.88:1);
+       true brand pink #E61E73 stays on links, accents, and highlights via --brand */
     .submit-btn,
-    .cta-btn { font-size: 19px; }
+    .cta-card .cta-btn { background: #D81C6D; }
   </style>
 </head>
 <body>
