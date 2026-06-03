@@ -34,31 +34,33 @@
       --font-body: "Manrope", system-ui, sans-serif;
       --font-ui: "DM Sans", system-ui, sans-serif;
 
-      --bg: #fbfaf7;
-      --surface: #ffffff;
-      --surface-2: #f4f1ea;
-      --ink: #1a1714;
-      --ink-soft: #5c554c;
-      --line: #e6e1d6;
-      --brand: #b4541f;
-      --brand-ink: #ffffff;
-      --accent: #2f6b5e;
-      --ring: rgba(180, 84, 31, 0.45);
-      --shadow: 0 24px 60px rgba(26, 23, 20, 0.12);
+      --bg: #F8FAFC;          /* soft white — page background / whitespace */
+      --surface: #ffffff;     /* cards */
+      --surface-2: #EBF2FF;   /* light blue tint — pills / chips */
+      --ink: #2D3748;         /* charcoal — body, subheads, footer */
+      --ink-soft: #2D3748;    /* charcoal — secondary text (mid grey #8896A8 fails AA on white) */
+      --line: #7FD8D0;        /* aqua — dividers / borders / accents */
+      --brand: #E61E73;       /* pink — buttons, CTAs, links */
+      --brand-ink: #ffffff;   /* button text */
+      --accent: #7FD8D0;      /* aqua — graphic accents / highlights */
+      --headline: #1F4E8C;    /* blue — headlines, logo, primary brand */
+      --ring: rgba(230, 30, 115, 0.45);
+      --shadow: 0 24px 60px rgba(31, 78, 140, 0.12);
     }
 
     [data-theme="dark"] {
-      --bg: #14110e;
-      --surface: #1d1916;
-      --surface-2: #241f1b;
-      --ink: #f5f1ea;
-      --ink-soft: #b6ab9c;
-      --line: #342d27;
-      --brand: #e08a4f;
-      --brand-ink: #1a1714;
-      --accent: #74c2af;
-      --ring: rgba(224, 138, 79, 0.5);
-      --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      --bg: #0F1B2D;          /* deep navy */
+      --surface: #16243A;
+      --surface-2: #1E3050;
+      --ink: #E6EDF6;         /* light body text */
+      --ink-soft: #C2CEDD;
+      --line: #2C4A66;        /* subtle divider */
+      --brand: #E61E73;       /* pink CTAs (white text) */
+      --brand-ink: #ffffff;
+      --accent: #7FD8D0;      /* aqua accents */
+      --headline: #6FB2F0;    /* light blue headlines on dark */
+      --ring: rgba(230, 30, 115, 0.55);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -181,6 +183,21 @@
       .form-card { position: static; }
     }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+
+    /* ---------- Brand palette role overrides (Michal Kaye) ---------- */
+    /* Headlines, logo, eyebrow -> brand blue */
+    .logo,
+    .hero h1,
+    .form-card h2,
+    .section-title,
+    .form-success h2,
+    .eyebrow { color: var(--headline); }
+    /* Aqua accent circles need a dark glyph to stay readable (not white-on-aqua) */
+    .benefits li::before,
+    .form-success .check { color: #2D3748; }
+    /* Pink CTA buttons: white text sized to qualify as WCAG "large" text (>=18.66px bold) */
+    .submit-btn,
+    .cta-btn { font-size: 19px; }
   </style>
 </head>
 <body>
