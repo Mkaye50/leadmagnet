@@ -24,15 +24,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root {
-      --font-title: "Cormorant Garamond", Georgia, serif;
-      --font-body: "Manrope", system-ui, sans-serif;
-      --font-ui: "DM Sans", system-ui, sans-serif;
+      --font-title: "DM Serif Display", Georgia, serif;
+      --font-body: "Inter", system-ui, sans-serif;
+      --font-ui: "Inter", system-ui, sans-serif;
 
       --bg: #F8FAFC;          /* soft white — page background / whitespace */
       --surface: #ffffff;     /* cards */
@@ -199,6 +199,9 @@
        true brand pink #E61E73 stays on links, accents, and highlights via --brand */
     .submit-btn,
     .cta-card .cta-btn { background: #D81C6D; }
+    /* DM Serif Display ships a single (400) weight — render headings/logo at 400 to avoid faux-bold */
+    h1, h2, h3 { font-weight: 400; }
+    .logo { font-weight: 400; }
   </style>
 </head>
 <body>

@@ -59,6 +59,14 @@ business mindset coach · mindset coach · consistent income · foundations ·
 struggling · hustle · scale · strategies · alignment · clarity · overwhelming ·
 transformation · boss babe · manifest
 
+## Typography
+Load via Google Fonts and assign by role:
+- **Headlines (h1/h2/h3):** DM Serif Display (single 400 weight — don't bold it)
+- **Body text:** Inter
+- **Nav, buttons, labels, captions:** Inter
+
+(Previously Cormorant Garamond / Manrope / DM Sans — replaced.)
+
 ## Calls to action
 - Primary social CTA: follow **@itsmichalkaye** on Instagram.
 - Sign content off as **— Michal**.
