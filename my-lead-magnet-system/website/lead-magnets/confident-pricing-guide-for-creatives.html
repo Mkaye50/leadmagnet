@@ -108,14 +108,15 @@
     .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: start; }
 
     .trust-bar {
-      display: inline-flex; align-items: center; gap: 12px;
-      padding: 8px 16px 8px 8px; background: var(--surface);
-      border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow);
+      display: inline-flex; align-items: center; gap: 12px; max-width: 100%;
+      padding: 7px 18px 7px 7px; background: #ffffff;
+      border-radius: 999px; box-shadow: 0 4px 18px rgba(31, 78, 140, .12);
     }
-    .trust-bar img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--brand); }
-    .trust-bar .who { font-family: var(--font-ui); font-size: 13px; line-height: 1.25; }
-    .trust-bar .who strong { display: block; color: var(--ink); }
-    .trust-bar .who span { color: var(--ink-soft); }
+    .trust-bar img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .trust-bar .who { font-family: var(--font-ui); font-size: 15px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .trust-bar .who strong { color: #2D3748; font-weight: 700; }
+    .trust-bar .who .dot { color: #8896A8; margin: 0 6px; }
+    .trust-bar .who .handle { color: #8896A8; }
 
     .eyebrow { font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.22em; font-size: 12px; font-weight: 700; color: var(--brand); margin: 26px 0 12px; }
     .hero h1 { font-size: clamp(40px, 6vw, 62px); color: var(--ink); }
@@ -222,8 +223,7 @@
           <div class="trust-bar">
             <img src="https://i.imgur.com/QSfI5Pk.jpeg" alt="Photo of Michal Kaye" />
             <div class="who">
-              <strong>Michal Kaye</strong>
-              <span>Business Coach for Creatives + Event-Based Business Owners · @itsmichalkaye</span>
+              <strong>Michal Kaye</strong><span class="dot">·</span><span class="handle">@itsmichalkaye</span>
             </div>
           </div>
 
