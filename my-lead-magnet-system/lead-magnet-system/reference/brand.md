@@ -37,6 +37,9 @@ Do NOT write to **beginners, hobbyists, or people in survival mode.**
 - Honest. Funny. Professional but never stiff.
 - Plain, grade-5 English. Short sentences. Warm and direct, never preachy.
 - Name the real problem (the income ceiling) and make the fix doable.
+- No em dashes or en dashes in content. Use periods or commas instead, and
+  write number ranges as words (e.g. "2 to 3 hours", not "2-3"). Ordinary
+  hyphens in compound words (follow-up, event-based) are fine.
 
 ## Core language to use
 - move the income ceiling
@@ -66,6 +69,10 @@ Load via Google Fonts and assign by role:
 - **Nav, buttons, labels, captions:** Inter
 
 (Previously Cormorant Garamond / Manrope / DM Sans — replaced.)
+
+## Tagline
+"Imagine opening your inbox on a Monday and the pipeline is full, and nothing
+changed except the gaps closed." Follow @itsmichalkaye.
 
 ## Calls to action
 - Primary social CTA: follow **@itsmichalkaye** on Instagram.
