@@ -1,0 +1,8 @@
+{
+  "ig_session_id": "YOUR_INSTAGRAM_SESSIONID_COOKIE",
+  "ig_csrftoken": "YOUR_INSTAGRAM_CSRFTOKEN_COOKIE",
+  "ig_user_id": "YOUR_INSTAGRAM_DS_USER_ID_COOKIE",
+  "notion_token": "ntn_YOUR_NOTION_INTEGRATION_TOKEN",
+  "notion_database_id": "YOUR_INSTAGRAM_SAVES_DATABASE_ID",
+  "collections_filter": ["Content Ideas", "Inspiration"]
+}
