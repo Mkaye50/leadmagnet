@@ -57,7 +57,8 @@ Form Integration:
 - Endpoint: POST JSON to the same-origin `/api/subscribe` (the Vercel function
   in `api/subscribe.mjs`, which forwards the lead to the Flodesk API).
 - Hidden fields: `lead_magnet` (the magnet's name) and `segment` (this magnet's
-  Flodesk segment ID, or empty "" to use the server's FLODESK_SEGMENT_ID default).
+  Flodesk segment NAME from the pipeline's Segment field - the server resolves
+  names to IDs - or empty "" to use the server's FLODESK_SEGMENT_ID default).
 - JavaScript: validate fields, POST JSON with lead_magnet, segment, first_name,
   email, and the dropdown answer; check `res.ok` before showing the success state.
 

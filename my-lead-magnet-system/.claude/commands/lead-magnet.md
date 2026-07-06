@@ -71,6 +71,9 @@ Set these properties (exact Notion property names):
 - **Slug** -- URL-friendly slug generated from the title
 - **Topic** -- "$ARGUMENTS"
 - **`Notion`** -- URL property; link to the content page created in Step 3
+- **Segment** -- a short Flodesk segment name for this magnet (e.g. "Confident
+  Pricing Guide"). The landing page form sends this name and the server resolves
+  it to the matching Flodesk segment automatically.
 
 ### Step 5: Summary
 Output a summary with:
@@ -80,5 +83,7 @@ Output a summary with:
 - Remind user to:
   1. Review and edit the content page in Notion
   2. Set Format to "Notion", "PDF", or "Both"
-  3. Change Status to "Execute" when ready
-  4. Run /execute-lead-magnets to generate the landing page and email
+  3. Create a Flodesk segment named exactly like the pipeline's Segment value
+     (Flodesk > Audience > Segments), so leads route to it automatically
+  4. Change Status to "Execute" when ready
+  5. Run /execute-lead-magnets to generate the landing page and email

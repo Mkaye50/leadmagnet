@@ -29,9 +29,10 @@
 
     Form: posts JSON to /api/subscribe (a Vercel serverless function that calls
     the Flodesk API) with the lead_magnet name, segment, first name, email, and
-    the qualifying dropdown answer. The hidden "segment" field may carry this
-    magnet's Flodesk segment ID; leave it empty ("") to fall back to the
-    FLODESK_SEGMENT_ID env var on the server. Never hardcode API keys here.
+    the qualifying dropdown answer. The hidden "segment" field carries this
+    magnet's Flodesk segment NAME or ID (from the pipeline's "Segment" field);
+    the server resolves names to IDs. Leave it empty ("") to fall back to the
+    FLODESK_SEGMENT_ID env var. Never hardcode API keys here.
     ============================================================================
   -->
 
@@ -489,7 +490,7 @@
             <form id="leadForm" novalidate>
               <!-- Hidden routing fields -->
               <input type="hidden" name="lead_magnet" value="{{LEAD_MAGNET_NAME}}" />
-              <input type="hidden" name="segment" value="{{SEGMENT_ID_OR_EMPTY}}" />
+              <input type="hidden" name="segment" value="{{SEGMENT_NAME_OR_EMPTY}}" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>

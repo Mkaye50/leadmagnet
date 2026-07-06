@@ -17,8 +17,9 @@
     Delivery: opt-in -> email with the Notion page link.
 
     Form capture: POSTs to /api/subscribe (Vercel function -> Flodesk API).
-    Segment: uses the FLODESK_SEGMENT_ID env var unless the hidden "segment"
-    field below carries a specific Flodesk segment ID for this magnet.
+    Segment: the hidden "segment" field carries this magnet's Flodesk segment
+    NAME (or ID); the server resolves names to IDs automatically. Create a
+    Flodesk segment with the matching name and leads route themselves.
   -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -257,7 +258,7 @@
 
             <form id="leadForm" novalidate>
               <input type="hidden" name="lead_magnet" value="The Confident Pricing Guide for Creatives" />
-              <input type="hidden" name="segment" value="" />
+              <input type="hidden" name="segment" value="Confident Pricing Guide" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
