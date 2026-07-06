@@ -64,13 +64,13 @@ Add an entry in the **Lead Magnet Pipeline** Notion database:
   (This is the database ID, a plain UUID — NOT a Notion API token. The
   integration token lives in your MCP server settings and is never committed.)
 
-Set these properties:
-- **Name** -- the lead magnet title
+Set these properties (exact Notion property names):
+- **`Title `** -- the lead magnet title (NOTE: the property name ends with a trailing space)
 - **Status** -- "Draft"
 - **Format** -- "Notion"
 - **Slug** -- URL-friendly slug generated from the title
 - **Topic** -- "$ARGUMENTS"
-- **Notion URL** -- link to the content page created in Step 3
+- **`Notion`** -- URL property; link to the content page created in Step 3
 
 ### Step 5: Summary
 Output a summary with:

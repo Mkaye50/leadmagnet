@@ -27,11 +27,11 @@
     Theme: light/dark via [data-theme] + CSS variables, persisted in
     localStorage (key: "theme"), falling back to prefers-color-scheme.
 
-    Form: posts FormData to the live Pipedream webhook (pre-filled below) with
-    the lead_magnet name, segment/tag {{SEGMENT_ID_OR_TAG}}, first name, email,
-    and the qualifying dropdown answer. The webhook URL is shared across pages;
-    keep {{SEGMENT_ID_OR_TAG}} as a placeholder so each magnet routes to its own
-    segment at generation time. Never hardcode secret API keys here.
+    Form: posts JSON to /api/subscribe (a Vercel serverless function that calls
+    the Flodesk API) with the lead_magnet name, segment, first name, email, and
+    the qualifying dropdown answer. The hidden "segment" field may carry this
+    magnet's Flodesk segment ID; leave it empty ("") to fall back to the
+    FLODESK_SEGMENT_ID env var on the server. Never hardcode API keys here.
     ============================================================================
   -->
 
@@ -489,7 +489,7 @@
             <form id="leadForm" novalidate>
               <!-- Hidden routing fields -->
               <input type="hidden" name="lead_magnet" value="{{LEAD_MAGNET_NAME}}" />
-              <input type="hidden" name="segment" value="{{SEGMENT_ID_OR_TAG}}" />
+              <input type="hidden" name="segment" value="{{SEGMENT_ID_OR_EMPTY}}" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
@@ -606,10 +606,10 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ---------- Form: validate + POST to Flodesk webhook + success state ----------
+    // ---------- Form: validate + POST to /api/subscribe + success state ----------
     (function () {
-      // Replaced at generation time. Keep placeholders in the reference file.
-      const WEBHOOK_URL = "https://eo36rlwfvxbu6vy.m.pipedream.net";
+      // Same-origin Vercel function (api/subscribe.mjs); it forwards the lead to Flodesk.
+      const FORM_ENDPOINT = "/api/subscribe";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
@@ -639,10 +639,14 @@
         submitBtn.textContent = "Sending…";
 
         try {
-          const data = new FormData(form); // lead_magnet, segment, first_name, email, qualifier
-          await fetch(WEBHOOK_URL, { method: "POST", body: data });
-          // Most form webhooks accept the POST without CORS-readable responses;
-          // treat a completed request as success.
+          // lead_magnet, segment, first_name, email, qualifier
+          const payload = Object.fromEntries(new FormData(form));
+          const res = await fetch(FORM_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Subscribe failed: " + res.status);
           card.classList.add("done");
         } catch (err) {
           submitBtn.disabled = false;

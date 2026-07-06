@@ -37,7 +37,7 @@ Create the landing page at website/lead-magnets/[slug].html.
 
 Requirements:
 - Pure CSS with variables (no Tailwind CDN)
-- Cormorant Garamond- title , Manrope- body, DM Sans- navigation buttons,  via Google Fonts / CDN
+- DM Serif Display (titles/headings, single 400 weight) + Inter (body, nav, buttons), via Google Fonts
 - Full light/dark theme support with localStorage persistence
 - Accessible: contrast ratios, alt text, focus states
 
@@ -54,9 +54,12 @@ Sections in order:
 6. **Footer** -- copyright line
 
 Form Integration:
-- Webhook URL: https://eo36rlwfvxbu6vy.m.pipedream.net
-- Segment/Lead Magnet Tag: {{SEGMENT_ID_OR_TAG}}
-- JavaScript: validate fields, POST FormData to webhook, include lead_magnet, segment/tag, name, email, and dropdown answer in the payload, then show success state.
+- Endpoint: POST JSON to the same-origin `/api/subscribe` (the Vercel function
+  in `api/subscribe.mjs`, which forwards the lead to the Flodesk API).
+- Hidden fields: `lead_magnet` (the magnet's name) and `segment` (this magnet's
+  Flodesk segment ID, or empty "" to use the server's FLODESK_SEGMENT_ID default).
+- JavaScript: validate fields, POST JSON with lead_magnet, segment, first_name,
+  email, and the dropdown answer; check `res.ok` before showing the success state.
 
 ### Step 3: Write Delivery Email
 Write the plain text delivery email. Save to website/lead-magnets/[slug]-email.txt.

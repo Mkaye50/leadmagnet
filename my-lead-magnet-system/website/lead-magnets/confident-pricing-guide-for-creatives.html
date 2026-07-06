@@ -16,8 +16,9 @@
     Lead magnet: The Confident Pricing Guide for Creatives  (Format: Notion)
     Delivery: opt-in -> email with the Notion page link.
 
-    Webhook URL: live (Pipedream). Host photo: set. TODO before going live:
-    replace {{SEGMENT_ID_OR_TAG}} with this magnet's segment/tag.
+    Form capture: POSTs to /api/subscribe (Vercel function -> Flodesk API).
+    Segment: uses the FLODESK_SEGMENT_ID env var unless the hidden "segment"
+    field below carries a specific Flodesk segment ID for this magnet.
   -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -256,7 +257,7 @@
 
             <form id="leadForm" novalidate>
               <input type="hidden" name="lead_magnet" value="The Confident Pricing Guide for Creatives" />
-              <input type="hidden" name="segment" value="{{SEGMENT_ID_OR_TAG}}" />
+              <input type="hidden" name="segment" value="" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
@@ -368,7 +369,7 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     (function () {
-      const WEBHOOK_URL = "https://eo36rlwfvxbu6vy.m.pipedream.net";
+      const FORM_ENDPOINT = "/api/subscribe";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
@@ -394,8 +395,13 @@
         submitBtn.disabled = true;
         submitBtn.textContent = "Sending…";
         try {
-          const data = new FormData(form);
-          await fetch(WEBHOOK_URL, { method: "POST", body: data });
+          const payload = Object.fromEntries(new FormData(form));
+          const res = await fetch(FORM_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Subscribe failed: " + res.status);
           card.classList.add("done");
         } catch (err) {
           submitBtn.disabled = false;

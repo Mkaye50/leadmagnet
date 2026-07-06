@@ -23,7 +23,7 @@ Read these before building anything:
 ## Notion Database Info
 - **Data Source ID:** `373f96051aee80ee9634ec39fb0e0038`
 - **Database URL:** https://www.notion.so/373f96051aee80ee9634ec39fb0e0038
-- **Fields:** Name, Status, Format, Slug, Topic, Notion URL
+- **Fields:** `Title ` (NOTE: the property name ends with a trailing space), Status, Format, Slug, Topic, `Notion` (URL property), Landing URL
 
 (The Data Source ID is a plain database UUID, not a secret. The Notion
 integration token is configured in MCP settings and must never be committed.)
@@ -36,7 +36,7 @@ integration token is configured in MCP settings and must never be committed.)
 Fetch the pipeline database and find all entries where Status = "Execute".
 
 For each item, extract:
-- Name, Topic, Slug, Format, Notion URL, Page ID
+- `Title ` (trailing space in the property name), Topic, Slug, Format, `Notion` (URL), Page ID
 
 If no items have status "Execute", inform the user and stop.
 
