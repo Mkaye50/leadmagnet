@@ -67,9 +67,10 @@ npm run serve                                           # preview landing pages
 2. You review/edit the Notion page, choose **Format**, and set **Status =
    Execute** when it's ready to ship.
 3. **`/execute-lead-magnets`** reads every `Execute` entry, builds the landing
-   page (`website/lead-magnets/[slug].html`) and delivery email
-   (`[slug]-email.txt`) from `reference/conversion-landing-sample.html`,
-   generates a PDF when Format is PDF/Both, and sets Status = Complete.
+   page (`[slug].html`, in the repo root so Vercel's cleanUrls serves it at
+   `/[slug]` with no rewrite needed) and delivery email (`[slug]-email.txt`)
+   from `reference/conversion-landing-sample.html`, generates a PDF when
+   Format is PDF/Both, and sets Status = Complete.
 4. **`/landing-page`** is the standalone version of the page-build step for
    one-off pages straight from a topic.
 
@@ -79,10 +80,16 @@ is never committed.
 
 ## Wiring up email capture
 
-The landing page posts FormData to a `{{FLODESK_WEBHOOK_URL}}` placeholder with
-the lead-magnet name, a `{{SEGMENT_ID_OR_TAG}}`, first name, email, and the
-qualifying dropdown answer. Fill those in at generation time so each magnet
-routes to its own Flodesk segment — **never commit a real webhook key.**
+Each landing page posts JSON to the same-origin `/api/subscribe` (a Vercel
+serverless function, `api/subscribe.mjs` at the repo root) with the
+lead-magnet name, a Flodesk segment name, first name, email, and the
+qualifying dropdown answer. The function looks up the segment by name via
+the Flodesk API and adds the subscriber to it — no webhook key or segment ID
+is ever hardcoded into a page.
+
+Requires one Vercel environment variable: `FLODESK_API_KEY` (from Flodesk >
+Settings > Integrations > API keys). Optionally set `FLODESK_SEGMENT_ID` as a
+fallback segment for pages that don't specify one.
 
 ## Notes
 

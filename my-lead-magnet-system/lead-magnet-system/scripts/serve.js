@@ -16,7 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(__dirname, "..", "..");
+const ROOT = path.resolve(__dirname, "..", "..", "..");
 const PORT = Number(process.argv[2]) || 4321;
 
 const MIME = {
@@ -67,5 +67,5 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`Serving ${ROOT}`);
   console.log(`→ http://localhost:${PORT}/`);
-  console.log(`→ http://localhost:${PORT}/website/lead-magnets/`);
+  console.log(`→ http://localhost:${PORT}/<slug>.html  (generated landing pages, repo root)`);
 });

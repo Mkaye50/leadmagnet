@@ -50,22 +50,28 @@ For each item, immediately update its status to "In Progress".
 
 ### Step 3: Build Assets Based on Format
 
+Landing pages go at **[slug].html in the repo root** (not nested in any
+subfolder) — Vercel's cleanUrls setting serves a root-level `[slug].html`
+at the clean path `/[slug]` with no rewrite rule needed. Delivery emails
+and PDF-source HTML are never served publicly, so they stay nested under
+my-lead-magnet-system/website/lead-magnets/.
+
 #### Format = "Notion" (default)
 The deliverable is the Notion page. Build marketing assets only:
 1. Research the topic (for landing page copy)
-2. Build the landing page at website/lead-magnets/[slug].html
-3. Write the delivery email at website/lead-magnets/[slug]-email.txt
+2. Build the landing page at [slug].html (repo root)
+3. Write the delivery email at my-lead-magnet-system/website/lead-magnets/[slug]-email.txt
    - Include the Notion URL as the deliverable link
 
 #### Format = "PDF"
 The deliverable is a downloadable PDF:
 1. Read content from the linked Notion page
 2. Research the topic (for landing page copy)
-3. Build a PDF-formatted HTML at website/lead-magnets/[slug]-pdf.html
-4. Build the landing page at website/lead-magnets/[slug].html
+3. Build a PDF-formatted HTML at my-lead-magnet-system/website/lead-magnets/[slug]-pdf.html
+4. Build the landing page at [slug].html (repo root)
 5. Generate the PDF via Puppeteer
-   (`npm run pdf -- website/lead-magnets/[slug]-pdf.html` →
-   writes website/lead-magnets/[slug]-pdf.pdf)
+   (`npm run pdf -- my-lead-magnet-system/website/lead-magnets/[slug]-pdf.html` →
+   writes my-lead-magnet-system/website/lead-magnets/[slug]-pdf.pdf)
 6. Write the delivery email referencing the attached PDF
 
 #### Format = "Both"
@@ -78,4 +84,7 @@ Set Status to "Complete" for each processed item.
 Stage all new files, commit, and push to deploy.
 
 ### Step 6: Summary
-For each item: title, format, files created, and remind user to paste the email into their CRM automation.
+For each item: title, format, files created, and the live URL
+(https://<vercel-domain>/[slug]). Remind user to:
+1. Create a Flodesk segment named exactly like the pipeline's Segment value
+2. Paste the email into their CRM automation

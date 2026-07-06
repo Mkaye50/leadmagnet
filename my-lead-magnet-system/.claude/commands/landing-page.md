@@ -33,7 +33,10 @@ Use web search to research "$ARGUMENTS". Find:
 - Any relevant stats or social proof angles
 
 ### Step 2: Build the Landing Page
-Create the landing page at website/lead-magnets/[slug].html.
+Create the landing page at [slug].html **in the repo root** (not nested in
+any subfolder). Vercel's cleanUrls setting serves a root-level `[slug].html`
+at the clean path `/[slug]` with no rewrite rule needed — this is what makes
+every new lead magnet work immediately after deploy.
 
 Requirements:
 - Pure CSS with variables (no Tailwind CDN)
@@ -63,7 +66,9 @@ Form Integration:
   email, and the dropdown answer; check `res.ok` before showing the success state.
 
 ### Step 3: Write Delivery Email
-Write the plain text delivery email. Save to website/lead-magnets/[slug]-email.txt.
+Write the plain text delivery email. Save to
+my-lead-magnet-system/website/lead-magnets/[slug]-email.txt (this file is
+never served publicly, so it can stay nested).
 
 Structure:
 - Subject line (short, specific to the topic)
@@ -75,9 +80,12 @@ Structure:
 - PS: invite them to reply with questions
 
 ### Step 4: Deploy
-1. git add website/lead-magnets/[slug].html website/lead-magnets/[slug]-email.txt
+1. git add [slug].html my-lead-magnet-system/website/lead-magnets/[slug]-email.txt
 2. git commit -m "Add [title] lead magnet landing page"
 3. git push
 
 ### Step 5: Summary
-Output: page title, slug, files created, live URL, and remind user to paste the email into their CRM automation.
+Output: page title, slug, files created, and the live URL (https://<vercel-domain>/[slug]).
+Remind user to:
+1. Create a Flodesk segment named exactly like the segment value used in the form
+2. Paste the email into their CRM automation
