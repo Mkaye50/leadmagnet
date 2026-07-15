@@ -331,6 +331,8 @@
     }
     .form-success h2 { color: var(--ink); }
     .form-success p { font-family: var(--font-ui); color: var(--ink-soft); margin-top: 8px; }
+    .form-success .guide-link { display: inline-block; margin-top: 16px; font-family: var(--font-ui); font-weight: 700; font-size: 15px; padding: 12px 24px; border-radius: 999px; background: #D81C6D; color: #ffffff; text-decoration: none; }
+    .form-success .guide-link:hover { filter: brightness(1.06); }
 
     /* ---------- FAQ ---------- */
     .section { padding: 64px 0; }
@@ -530,7 +532,8 @@
           <div class="form-success" role="status" aria-live="polite">
             <div class="check">✓</div>
             <h2>{{SUCCESS_HEADING}}</h2>
-            <p>{{SUCCESS_BODY}}</p>
+            <p>{{SUCCESS_BODY}} It should have also opened in a new tab, ready to read right now.</p>
+            <a class="guide-link" href="{{GUIDE_URL}}" target="_blank" rel="noopener">Open your guide now →</a>
           </div>
         </div>
       </div>
@@ -612,6 +615,9 @@
     (function () {
       // Same-origin Vercel function (api/subscribe.mjs); it forwards the lead to Flodesk.
       const FORM_ENDPOINT = "/api/subscribe";
+      // The Notion content page for this magnet. Must be set to "Publish to
+      // web" in Notion's Share menu, or visitors hit a login wall instead.
+      const GUIDE_URL = "{{GUIDE_URL}}";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
@@ -637,6 +643,10 @@
         setInvalid("f-email", emailBad);
         if (nameBad || emailBad) return;
 
+        // Reserve a tab now, inside the click gesture, so browsers don't
+        // block it as a popup once we navigate it after the await below.
+        const guideTab = window.open("", "_blank");
+
         submitBtn.disabled = true;
         submitBtn.textContent = "Sending…";
 
@@ -649,8 +659,10 @@
             body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error("Subscribe failed: " + res.status);
+          if (guideTab) guideTab.location = GUIDE_URL;
           card.classList.add("done");
         } catch (err) {
+          if (guideTab) guideTab.close();
           submitBtn.disabled = false;
           submitBtn.textContent = "{{CTA_BUTTON}}";
           alert("Something went wrong sending the form. Please try again.");

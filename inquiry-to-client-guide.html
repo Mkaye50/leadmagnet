@@ -157,6 +157,8 @@
     .form-success .check { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; }
     .form-success h2 { color: var(--ink); }
     .form-success p { font-family: var(--font-ui); color: var(--ink-soft); margin-top: 8px; }
+    .form-success .guide-link { display: inline-block; margin-top: 16px; font-family: var(--font-ui); font-weight: 700; font-size: 15px; padding: 12px 24px; border-radius: 999px; background: #D81C6D; color: #ffffff; text-decoration: none; }
+    .form-success .guide-link:hover { filter: brightness(1.06); }
 
     .section { padding: 64px 0; }
     .section-title { text-align: center; font-size: clamp(30px, 4vw, 42px); color: var(--ink); margin-bottom: 8px; }
@@ -295,7 +297,8 @@
           <div class="form-success" role="status" aria-live="polite">
             <div class="check">✓</div>
             <h2>Check your inbox!</h2>
-            <p>Your Inquiry-to-Client Guide is on its way. If it's hiding, peek in spam or promotions.</p>
+            <p>Your Inquiry-to-Client Guide is on its way. If it's hiding, peek in spam or promotions. It should have also opened in a new tab, ready to read right now.</p>
+            <a class="guide-link" href="https://www.notion.so/381f96051aee81b4afa3f8d0b1d21800" target="_blank" rel="noopener">Open your guide now →</a>
           </div>
         </div>
       </div>
@@ -371,6 +374,7 @@
 
     (function () {
       const FORM_ENDPOINT = "/api/subscribe";
+      const GUIDE_URL = "https://www.notion.so/381f96051aee81b4afa3f8d0b1d21800";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
@@ -393,6 +397,10 @@
         setInvalid("f-email", emailBad);
         if (nameBad || emailBad) return;
 
+        // Reserve a tab now, inside the click gesture, so browsers don't
+        // block it as a popup once we navigate it after the await below.
+        const guideTab = window.open("", "_blank");
+
         submitBtn.disabled = true;
         submitBtn.textContent = "Sending…";
         try {
@@ -403,8 +411,10 @@
             body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error("Subscribe failed: " + res.status);
+          if (guideTab) guideTab.location = GUIDE_URL;
           card.classList.add("done");
         } catch (err) {
+          if (guideTab) guideTab.close();
           submitBtn.disabled = false;
           submitBtn.textContent = "Send me the guide";
           alert("Something went wrong sending the form. Please try again.");

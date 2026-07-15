@@ -64,6 +64,11 @@ Form Integration:
   names to IDs - or empty "" to use the server's FLODESK_SEGMENT_ID default).
 - JavaScript: validate fields, POST JSON with lead_magnet, segment, first_name,
   email, and the dropdown answer; check `res.ok` before showing the success state.
+- On success, also open the guide's Notion content page in a new tab (reserve
+  the tab with `window.open("", "_blank")` synchronously before the `await`,
+  then set `guideTab.location` once the POST succeeds, so browsers don't
+  block it as a popup). Add a visible "Open your guide now" fallback link in
+  the success state pointing to the same URL, in case the popup was blocked.
 
 ### Step 3: Write Delivery Email
 Write the plain text delivery email. Save to
@@ -87,5 +92,11 @@ Structure:
 ### Step 5: Summary
 Output: page title, slug, files created, and the live URL (https://<vercel-domain>/[slug]).
 Remind user to:
-1. Create a Flodesk segment named exactly like the segment value used in the form
-2. Paste the email into their CRM automation
+1. Set the Notion content page to "Publish to web" (Share menu in Notion) --
+   without this, the auto-opened tab and the email link both hit a login wall
+   instead of the guide.
+2. Create a Flodesk segment named exactly like the segment value used in the form
+3. Create a Flodesk workflow triggered by "subscriber joins segment" for that
+   segment, with an email step using the delivery email from Step 3 -- the
+   API can create the subscriber and add them to a segment, but sending the
+   actual email is a Flodesk workflow you set up once per magnet.

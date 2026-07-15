@@ -56,6 +56,13 @@ at the clean path `/[slug]` with no rewrite rule needed. Delivery emails
 and PDF-source HTML are never served publicly, so they stay nested under
 my-lead-magnet-system/website/lead-magnets/.
 
+On a successful form submit, the page also opens the deliverable (the
+Notion page, or the PDF for Format = PDF/Both) in a new tab: reserve the
+tab with `window.open("", "_blank")` synchronously before the `await` on
+the fetch, then set `guideTab.location` once the POST succeeds, so browsers
+don't block it as a popup. Add a visible "Open your guide now" fallback
+link in the success state pointing to the same URL.
+
 #### Format = "Notion" (default)
 The deliverable is the Notion page. Build marketing assets only:
 1. Research the topic (for landing page copy)
@@ -86,5 +93,12 @@ Stage all new files, commit, and push to deploy.
 ### Step 6: Summary
 For each item: title, format, files created, and the live URL
 (https://<vercel-domain>/[slug]). Remind user to:
-1. Create a Flodesk segment named exactly like the pipeline's Segment value
-2. Paste the email into their CRM automation
+1. Set the Notion content page to "Publish to web" (Share menu in Notion) --
+   without this, the auto-opened tab and the email link both hit a login wall
+   instead of the guide. Not needed for Format = PDF, since the PDF file
+   itself is what opens.
+2. Create a Flodesk segment named exactly like the pipeline's Segment value
+3. Create a Flodesk workflow triggered by "subscriber joins segment" for that
+   segment, with an email step using the delivery email from Step 3 -- the
+   API can create the subscriber and add them to a segment, but sending the
+   actual email is a Flodesk workflow you set up once per magnet.
