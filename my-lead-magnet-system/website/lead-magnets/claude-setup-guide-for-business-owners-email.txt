@@ -1,0 +1,19 @@
+Subject: Your Claude Setup Guide is here 💛
+
+Hey {{contact.first_name}},
+
+You're in! Here's your free Claude Setup Guide for Business Owners. Read it right here, anytime:
+
+👉 https://www.notion.so/399f96051aee810fa3a8feca11e18a54
+
+This isn't a lecture about AI. It's 5 honest, doable steps (with the exact prompts) to set Claude up so it actually knows your business: one Project, one clear instructions list, 3 sharp documents, a prompt shape you can reuse anytime, and a monthly 2-minute tune-up.
+
+Here's the truth most business owners never hear: if you're still re-explaining your business every single chat, that's a setup problem, not a Claude problem. Fix the setup once, and every conversation after that already knows you. Simple, not complicated.
+
+If it helps you (and I think it will), come hang out with me for more honest talk about the business side of growing your income, over on Instagram: @itsmichalkaye.
+
+You've got this. Now go make Claude actually useful.
+
+Michal
+
+P.S. Hit reply and tell me where Claude keeps getting your business wrong. I read every message, and your question might be exactly what I cover next.
