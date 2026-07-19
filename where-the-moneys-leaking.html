@@ -3,23 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Confident Pricing Guide | Free Download</title>
-  <meta name="description" content="A free, no-ick guide to pricing your work with confidence: know your real number, raise your rates, and let your price filter for better clients." />
+  <title>Where the Money's Leaking | Free Tool</title>
+  <meta name="description" content="A free 2-minute numbers audit for creative and event-based business owners. Enter a handful of real numbers, see your #1 revenue leak, named. No pep talk, just the math." />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="The Confident Pricing Guide" />
-  <meta property="og:description" content="Stop guessing your prices. Charge what you're worth, and feel calm doing it." />
+  <meta property="og:title" content="Where the Money's Leaking" />
+  <meta property="og:description" content="A 2-minute numbers audit. Enter a handful of real numbers, see your #1 revenue leak, named." />
   <meta property="og:type" content="website" />
 
   <!--
     Generated from lead-magnet-system/reference/conversion-landing-sample.html
-    Lead magnet: The Confident Pricing Guide  (Format: Notion)
-    Delivery: opt-in -> email with the Notion page link.
+    Lead magnet: Where the Money's Leaking  (Format: Notion, interactive calculator)
+    Delivery: opt-in -> email with the Notion companion page link.
+
+    Unlike other lead magnets, the primary hook here is a client-side
+    calculator (no backend, no email required) that reveals a named leak
+    from 4 number inputs. The lead-capture form only appears after the
+    result is shown, offering the deeper "what to do next" companion guide.
 
     Form capture: POSTs to /api/subscribe (Vercel function -> Flodesk API).
     Segment: the hidden "segment" field carries this magnet's Flodesk segment
-    NAME (or ID); the server resolves names to IDs automatically. Create a
-    Flodesk segment with the matching name and leads route themselves.
+    NAME; the server resolves names to IDs automatically. Create a Flodesk
+    segment with the matching name and leads route themselves.
   -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -132,7 +137,7 @@
     .benefits li::before { content: "✓"; position: absolute; left: 0; top: 1px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; background: var(--accent); color: #fff; border-radius: 50%; font-size: 13px; font-weight: 700; }
 
     .form-card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 32px; box-shadow: var(--shadow); position: sticky; top: 88px; }
-    .form-card h2 { font-size: 30px; color: var(--ink); }
+    .form-card h2 { font-size: 28px; color: var(--ink); }
     .form-card .hint { font-family: var(--font-ui); color: var(--ink-soft); font-size: 14px; margin: 6px 0 20px; }
 
     .field { margin-bottom: 14px; }
@@ -151,8 +156,17 @@
     .micro-trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 16px; font-family: var(--font-ui); font-size: 12px; color: var(--ink-soft); }
     .micro-trust span { display: inline-flex; align-items: center; gap: 5px; }
 
+    /* ---------- Calculator-specific states ---------- */
+    .calc-result { display: none; }
+    .result-box { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 20px; }
+    .result-headline { font-family: var(--font-title); font-size: 24px; color: var(--headline); margin-bottom: 8px; }
+    .result-detail { font-family: var(--font-ui); font-size: 14px; color: var(--ink); line-height: 1.7; }
+    .result-detail strong { color: var(--headline); }
+    .capture-lead { font-family: var(--font-ui); font-size: 14px; color: var(--ink-soft); margin-bottom: 14px; }
+
     .form-success { display: none; text-align: center; padding: 12px 0; }
     .form-card.done .form-body { display: none; }
+    .form-card.done .calc-result { display: none !important; }
     .form-card.done .form-success { display: block; }
     .form-success .check { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 28px; }
     .form-success h2 { color: var(--ink); }
@@ -235,32 +249,69 @@
             </div>
           </div>
 
-          <p class="eyebrow">Free Download</p>
-          <h1>Your Prices Might Be the Gap Holding Your Income Down</h1>
-          <p class="subhead">For creative and event-based business owners who already have clients and revenue, but keep hitting the same income number. Pricing is often the first gap to find.</p>
+          <p class="eyebrow">Free Tool</p>
+          <h1>Where Is Your Money Actually Leaking?</h1>
+          <p class="subhead">A 2-minute numbers audit for creative and event-based business owners. Enter a handful of real numbers, see your #1 leak, named. No pep talk, just the math.</p>
 
           <div class="pills">
-            <span class="pill">📄 6-step guide</span>
-            <span class="pill">⏱️ 10-minute read</span>
+            <span class="pill">🔢 4 quick numbers</span>
+            <span class="pill">⏱️ 2-minute audit</span>
             <span class="pill">💛 Simple, not complicated</span>
           </div>
 
           <ul class="benefits">
-            <li>Spot where your pricing is quietly leaking income</li>
-            <li>Set numbers that move your income ceiling, not just cover costs</li>
-            <li>Raise rates with current clients using a simple, kind script</li>
-            <li>Go back to your pipeline and sell clearly and consistently</li>
+            <li>See your current monthly revenue, laid out plainly</li>
+            <li>Find out exactly what missed bookings are costing you</li>
+            <li>Know whether your leak is follow-up or your price</li>
+            <li>Get a clear next step for whichever one it is</li>
           </ul>
         </div>
 
         <div class="form-card" id="formCard">
-          <div class="form-body">
-            <h2>Get the free guide</h2>
-            <p class="hint">Pop in your details and I'll send it straight to your inbox.</p>
+          <div class="form-body" id="calcBody">
+            <h2>Find your leak</h2>
+            <p class="hint">Real numbers only. This needs actual revenue to audit, so estimates are fine, but zeros won't tell you much.</p>
+
+            <div class="field" id="f-avgPrice">
+              <label for="avgPrice">Average price per client or project ($)</label>
+              <input type="number" id="avgPrice" inputmode="decimal" min="0" placeholder="1500" />
+            </div>
+
+            <div class="field" id="f-inquiries">
+              <label for="inquiries">Inquiries in an average month</label>
+              <input type="number" id="inquiries" inputmode="decimal" min="0" placeholder="10" />
+            </div>
+
+            <div class="field" id="f-bookings">
+              <label for="bookings">Of those, how many actually book</label>
+              <input type="number" id="bookings" inputmode="decimal" min="0" placeholder="4" />
+            </div>
+
+            <div class="field" id="f-goal">
+              <label for="goal">Your monthly income goal ($)</label>
+              <input type="number" id="goal" inputmode="decimal" min="0" placeholder="8000" />
+            </div>
+
+            <button type="button" class="submit-btn" id="calcBtn">Show me my leak</button>
+
+            <div class="micro-trust">
+              <span>🔒 No spam</span>
+              <span>🧮 Free, no email needed</span>
+              <span>⚡ Instant result</span>
+            </div>
+          </div>
+
+          <div class="calc-result" id="calcResult">
+            <div class="result-box">
+              <div class="result-headline" id="resultHeadline"></div>
+              <div class="result-detail" id="resultDetail"></div>
+            </div>
+
+            <p class="capture-lead">Want the exact playbook for your leak type, plus what to do next? Drop your email and I'll send it over.</p>
 
             <form id="leadForm" novalidate>
-              <input type="hidden" name="lead_magnet" value="The Confident Pricing Guide" />
-              <input type="hidden" name="segment" value="Confident Pricing Guide" />
+              <input type="hidden" name="lead_magnet" value="Where the Money's Leaking" />
+              <input type="hidden" name="segment" value="Where the Money's Leaking" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
@@ -274,17 +325,7 @@
                 <p class="error-text">Please enter a valid email.</p>
               </div>
 
-              <div class="field" id="f-qualify">
-                <label for="qualifier">Where's your income at right now?</label>
-                <select id="qualifier" name="qualifier">
-                  <option value="">Choose one (optional)</option>
-                  <option value="Have clients, income is stuck">I have clients, but my income is stuck</option>
-                  <option value="Ready to raise my rates">I'm ready to raise my rates</option>
-                  <option value="Not sure where my gaps are">I'm not sure where my gaps are</option>
-                </select>
-              </div>
-
-              <button type="submit" class="submit-btn" id="submitBtn">Send me the guide</button>
+              <button type="submit" class="submit-btn" id="submitBtn">Send me the playbook</button>
 
               <div class="micro-trust">
                 <span>🔒 No spam</span>
@@ -297,8 +338,8 @@
           <div class="form-success" role="status" aria-live="polite">
             <div class="check">✓</div>
             <h2>Check your inbox!</h2>
-            <p>Your Confident Pricing Guide is on its way. If it's hiding, peek in spam or promotions. It should have also opened in a new tab, ready to read right now.</p>
-            <a class="guide-link" href="https://www.notion.so/373f96051aee8125beb6facabaaa6e7a" target="_blank" rel="noopener">Open your guide now →</a>
+            <p>Your leak playbook is on its way. If it's hiding, peek in spam or promotions. It should have also opened in a new tab, ready to read right now.</p>
+            <a class="guide-link" href="https://www.notion.so/3a2f96051aee8147b53df92878aa3cd0" target="_blank" rel="noopener">Open your playbook now →</a>
           </div>
         </div>
       </div>
@@ -311,19 +352,19 @@
         <div class="faq">
           <details open>
             <summary>Is this really free?</summary>
-            <div class="answer">Yep, 100% free. Drop your email and the guide lands in your inbox right away. No credit card, no catch.</div>
+            <div class="answer">Yep, 100% free, and you don't even need to give your email to see your number. The calculator itself is instant. The email is only for the deeper playbook on what to do next.</div>
           </details>
           <details>
-            <summary>I already have clients and income. Is this still for me?</summary>
-            <div class="answer">Yes, that's exactly who it's for. This is for owners who are making money but keep hitting the same income number. Pricing is usually one of the first gaps holding that ceiling in place.</div>
+            <summary>I'm just starting out. Is this for me?</summary>
+            <div class="answer">This tool needs real revenue to audit. If you don't have inquiries or bookings yet, there's nothing to calculate. It's built for owners who already have clients and income, but keep hitting the same number.</div>
           </details>
           <details>
-            <summary>Will raising my prices scare clients away?</summary>
-            <div class="answer">A few price-shoppers may leave, and that's healthy. Higher rates tend to keep the clients who value your work and haggle less. The guide shows you how to do it kindly, using the relationships already in your world.</div>
+            <summary>What if my numbers are just estimates?</summary>
+            <div class="answer">That's completely fine. A rough, honest estimate is enough to name the leak. You can always run it again with sharper numbers next month.</div>
           </details>
           <details>
             <summary>Do you sell my email or spam me?</summary>
-            <div class="answer">Never. You'll get the guide plus the occasional honest note on the business side of growing your income. Unsubscribe anytime with one click.</div>
+            <div class="answer">Never. You'll get the playbook plus the occasional honest note on the business side of growing your income. Unsubscribe anytime with one click.</div>
           </details>
         </div>
       </div>
@@ -332,9 +373,9 @@
     <section class="final-cta">
       <div class="wrap">
         <div class="cta-card">
-          <h2>Ready to charge like you mean it?</h2>
-          <p>Grab the free guide and quote your next client with a steady hand and a straight face.</p>
-          <a class="cta-btn" href="#formCard">Send me the guide</a>
+          <h2>Ready to see your number?</h2>
+          <p>It takes 2 minutes and a handful of real numbers. No pep talk, just the math.</p>
+          <a class="cta-btn" href="#formCard">Find my leak</a>
         </div>
       </div>
     </section>
@@ -372,9 +413,61 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // ---------- Calculator: pure client-side, no backend, no email needed ----------
+    (function () {
+      const calcBody = document.getElementById("calcBody");
+      const calcResult = document.getElementById("calcResult");
+      const calcBtn = document.getElementById("calcBtn");
+      const resultHeadline = document.getElementById("resultHeadline");
+      const resultDetail = document.getElementById("resultDetail");
+
+      function num(id) {
+        const v = parseFloat(document.getElementById(id).value);
+        return isNaN(v) || v < 0 ? 0 : v;
+      }
+      function fmt(n) {
+        return "$" + Math.round(n).toLocaleString();
+      }
+
+      calcBtn.addEventListener("click", function () {
+        const avgPrice = num("avgPrice");
+        const inquiries = num("inquiries");
+        const bookings = num("bookings");
+        const goal = num("goal");
+
+        const currentRevenue = bookings * avgPrice;
+        const missedBookings = Math.max(0, inquiries - bookings);
+        const bookingLeak = missedBookings * avgPrice;
+        const goalGap = Math.max(0, goal - currentRevenue);
+
+        let headline, detail;
+        if (bookingLeak > 0 && bookingLeak >= goalGap) {
+          headline = "Your #1 leak: Follow-Up, Not Price";
+          detail = "Your price isn't the problem right now. Your follow-up is.";
+        } else if (goalGap > 0) {
+          headline = "Your #1 leak: The Number Itself";
+          detail = "Even a full calendar wouldn't close this gap. It's your price, or your volume.";
+        } else {
+          headline = "You're Hitting Your Number";
+          detail = "This month covers your goal. The real question is whether that holds up every month.";
+        }
+
+        resultHeadline.textContent = headline;
+        resultDetail.innerHTML =
+          "Current monthly revenue: <strong>" + fmt(currentRevenue) + "</strong><br>" +
+          "Missed bookings this month: <strong>" + missedBookings.toFixed(0) + "</strong>, worth <strong>" + fmt(bookingLeak) + "</strong><br>" +
+          "Gap to your goal: <strong>" + fmt(goalGap) + "</strong><br><br>" +
+          detail;
+
+        calcBody.style.display = "none";
+        calcResult.style.display = "block";
+      });
+    })();
+
+    // ---------- Form: validate + POST to /api/subscribe + success state ----------
     (function () {
       const FORM_ENDPOINT = "/api/subscribe";
-      const GUIDE_URL = "https://www.notion.so/373f96051aee8125beb6facabaaa6e7a";
+      const GUIDE_URL = "https://www.notion.so/3a2f96051aee8147b53df92878aa3cd0";
 
       const form = document.getElementById("leadForm");
       const card = document.getElementById("formCard");
@@ -416,7 +509,7 @@
         } catch (err) {
           if (guideTab) guideTab.close();
           submitBtn.disabled = false;
-          submitBtn.textContent = "Send me the guide";
+          submitBtn.textContent = "Send me the playbook";
           alert("Something went wrong sending the form. Please try again.");
           console.error(err);
         }

@@ -2,7 +2,7 @@ Subject: Your Confident Pricing Guide is here 💛
 
 Hey {{contact.first_name}},
 
-You're in! Here's your free Confident Pricing Guide for Creatives. Read it right here, anytime:
+You're in! Here's your free Confident Pricing Guide. Read it right here, anytime:
 
 👉 https://www.notion.so/373f96051aee8125beb6facabaaa6e7a
 
