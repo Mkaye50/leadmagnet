@@ -14,11 +14,14 @@
 // different segment without touching this file.
 //
 // "leak_result" (optional, used by the Money Leak Calculator) is written to a
-// Flodesk custom field named "Leak Result" so the delivery workflow can merge
-// it into the email. The custom field must already exist in Flodesk (Audience
-// > Settings > Custom Fields) -- the API can set a field's value but cannot
-// create the field itself. If the field doesn't exist yet, this is a no-op:
-// the subscriber still gets created normally, just without that value set.
+// Flodesk custom field labeled "Leak Result" so the delivery workflow can
+// merge it into the email. The custom field must already exist in Flodesk
+// (Audience -> a subscriber -> Segments and data -> Add custom field) -- the
+// API can set a field's value but cannot create the field itself. Flodesk's
+// custom_fields payload is keyed by the field's internal "key", not its
+// display label, so this looks the key up via GET /custom-fields first. If
+// the field doesn't exist yet or the lookup fails, this is a no-op: the
+// subscriber still gets created normally, just without that value set.
 
 const FLODESK_API = "https://api.flodesk.com/v1";
 
@@ -52,6 +55,27 @@ async function resolveSegmentIds(raw, headers) {
   return ids;
 }
 
+// Custom fields are set by their internal "key", not the display label shown
+// in the Flodesk UI. Look the key up by label (case-insensitive) via
+// GET /custom-fields. Returns null if not found or the lookup fails.
+async function resolveCustomFieldKey(label, headers) {
+  const res = await fetch(`${FLODESK_API}/custom-fields?per_page=100`, { headers });
+  if (!res.ok) {
+    console.error("Flodesk custom-fields list failed:", res.status);
+    return null;
+  }
+  const data = await res.json();
+  const fields = data.data || data.custom_fields || [];
+  const match = fields.find(
+    (f) => (f.label || "").trim().toLowerCase() === label.toLowerCase()
+  );
+  if (!match) {
+    console.error(`Flodesk custom field not found by label: "${label}"`);
+    return null;
+  }
+  return match.key;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -75,13 +99,17 @@ export default async function handler(req, res) {
   const auth = "Basic " + Buffer.from(`${apiKey}:`).toString("base64");
   const headers = { Authorization: auth, "Content-Type": "application/json" };
 
-  // Create or update the subscriber. custom_fields is best-effort: an unknown
-  // key is expected to be ignored by Flodesk rather than reject the request,
-  // but this hasn't been confirmed against live docs, only the subscriber
-  // create endpoint's general shape.
+  // Create or update the subscriber. custom_fields is best-effort: if the
+  // "Leak Result" field's key can't be resolved, we just skip it rather than
+  // block the signup.
   const subscriberBody = { email, first_name: firstName || undefined };
   if (leakResult) {
-    subscriberBody.custom_fields = { "Leak Result": leakResult };
+    const fieldKey = await resolveCustomFieldKey("Leak Result", headers);
+    if (fieldKey) {
+      subscriberBody.custom_fields = { [fieldKey]: leakResult };
+    } else {
+      console.error("Skipping leak_result: could not resolve 'Leak Result' custom field key");
+    }
   }
 
   let subscriberRes = await fetch(`${FLODESK_API}/subscribers`, {
