@@ -7,11 +7,18 @@
 //   FLODESK_SEGMENT_ID  - default segment ID(s) or name(s), comma-separated,
 //                         used when the form does not send its own "segment"
 //
-// The form may POST JSON: { first_name, email, lead_magnet, qualifier, segment }
+// The form may POST JSON: { first_name, email, lead_magnet, qualifier, segment, leak_result }
 // "segment" (optional) accepts Flodesk segment IDs OR segment names (matched
 // case-insensitively against your Flodesk segments), several separated by commas.
 // Each landing page carries its own value, so every lead magnet can route to a
 // different segment without touching this file.
+//
+// "leak_result" (optional, used by the Money Leak Calculator) is written to a
+// Flodesk custom field named "Leak Result" so the delivery workflow can merge
+// it into the email. The custom field must already exist in Flodesk (Audience
+// > Settings > Custom Fields) -- the API can set a field's value but cannot
+// create the field itself. If the field doesn't exist yet, this is a no-op:
+// the subscriber still gets created normally, just without that value set.
 
 const FLODESK_API = "https://api.flodesk.com/v1";
 
@@ -59,6 +66,7 @@ export default async function handler(req, res) {
   const body = req.body || {};
   const email = (body.email || "").trim();
   const firstName = (body.first_name || "").trim();
+  const leakResult = String(body.leak_result || "").trim();
 
   if (!isValidEmail(email)) {
     return res.status(400).json({ error: "A valid email is required" });
@@ -67,12 +75,33 @@ export default async function handler(req, res) {
   const auth = "Basic " + Buffer.from(`${apiKey}:`).toString("base64");
   const headers = { Authorization: auth, "Content-Type": "application/json" };
 
-  // Create or update the subscriber.
-  const subscriberRes = await fetch(`${FLODESK_API}/subscribers`, {
+  // Create or update the subscriber. custom_fields is best-effort: an unknown
+  // key is expected to be ignored by Flodesk rather than reject the request,
+  // but this hasn't been confirmed against live docs, only the subscriber
+  // create endpoint's general shape.
+  const subscriberBody = { email, first_name: firstName || undefined };
+  if (leakResult) {
+    subscriberBody.custom_fields = { "Leak Result": leakResult };
+  }
+
+  let subscriberRes = await fetch(`${FLODESK_API}/subscribers`, {
     method: "POST",
     headers,
-    body: JSON.stringify({ email, first_name: firstName || undefined }),
+    body: JSON.stringify(subscriberBody),
   });
+
+  // If sending custom_fields caused the whole request to fail (unconfirmed
+  // field format, field doesn't exist, etc.), retry without it so the actual
+  // signup never breaks because of this best-effort extra.
+  if (!subscriberRes.ok && subscriberBody.custom_fields) {
+    const detail = await subscriberRes.text().catch(() => "");
+    console.error("Flodesk subscriber create with custom_fields failed, retrying without:", subscriberRes.status, detail);
+    subscriberRes = await fetch(`${FLODESK_API}/subscribers`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ email, first_name: firstName || undefined }),
+    });
+  }
 
   if (!subscriberRes.ok) {
     const detail = await subscriberRes.text().catch(() => "");

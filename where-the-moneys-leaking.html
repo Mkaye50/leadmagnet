@@ -459,6 +459,13 @@
           "Gap to your goal: <strong>" + fmt(goalGap) + "</strong><br><br>" +
           detail;
 
+        // Plain-text version for the Flodesk "Leak Result" custom field,
+        // read by the form submit handler below.
+        window.leakResultSummary =
+          headline + ". Current monthly revenue " + fmt(currentRevenue) +
+          ", missed bookings " + missedBookings.toFixed(0) + " worth " + fmt(bookingLeak) +
+          ", gap to goal " + fmt(goalGap) + ".";
+
         calcBody.style.display = "none";
         calcResult.style.display = "block";
       });
@@ -498,6 +505,7 @@
         submitBtn.textContent = "Sending…";
         try {
           const payload = Object.fromEntries(new FormData(form));
+          if (window.leakResultSummary) payload.leak_result = window.leakResultSummary;
           const res = await fetch(FORM_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
