@@ -84,7 +84,6 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.FLODESK_API_KEY;
   if (!apiKey) {
-    console.error("FLODESK_API_KEY is missing. Available env keys:", Object.keys(process.env).filter(k => k.startsWith("FLODESK")).join(", ") || "(none)");
     return res.status(500).json({ error: "FLODESK_API_KEY is not configured" });
   }
 
@@ -122,7 +121,6 @@ export default async function handler(req, res) {
   // If sending custom_fields caused the whole request to fail (unconfirmed
   // field format, field doesn't exist, etc.), retry without it so the actual
   // signup never breaks because of this best-effort extra.
-  console.error("Flodesk subscriber create response:", subscriberRes.status);
   if (!subscriberRes.ok && subscriberBody.custom_fields) {
     const detail = await subscriberRes.text().catch(() => "");
     console.error("Flodesk subscriber create with custom_fields failed, retrying without:", subscriberRes.status, detail);
