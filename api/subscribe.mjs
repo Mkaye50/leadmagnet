@@ -137,6 +137,9 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: "Could not subscribe right now" });
   }
 
+  const subscriber = await subscriberRes.json().catch(() => ({}));
+  const subscriberId = subscriber.id;
+
   // Add to segment(s): the form's value wins, else the env default.
   // Ignore unfilled "{{...}}" template placeholders.
   const rawSegments = String(body.segment || "").includes("{{")
@@ -147,14 +150,13 @@ export default async function handler(req, res) {
     headers
   );
 
-  if (segmentIds.length > 0) {
+  if (segmentIds.length > 0 && subscriberId) {
     const segmentRes = await fetch(
-      `${FLODESK_API}/subscribers/${encodeURIComponent(email)}/segments`,
+      `${FLODESK_API}/subscribers/${subscriberId}/segments`,
       { method: "POST", headers, body: JSON.stringify({ segment_ids: segmentIds }) }
     );
     if (!segmentRes.ok) {
       const detail = await segmentRes.text().catch(() => "");
-      // Subscriber exists even if segmenting failed - report success but log it.
       console.error("Flodesk segment add failed:", segmentRes.status, detail);
     }
   }
