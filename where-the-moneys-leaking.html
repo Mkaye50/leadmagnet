@@ -312,6 +312,8 @@
             <form id="leadForm" novalidate>
               <input type="hidden" name="lead_magnet" value="6a5cb1797c5625662ff97d9c" />
               <input type="hidden" name="segment" value="6a5cb1797c5625662ff97d9c" />
+              <div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+              <input type="hidden" name="_t" value="" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
@@ -477,6 +479,7 @@
       const GUIDE_URL = "https://www.notion.so/3a2f96051aee8147b53df92878aa3cd0";
 
       const form = document.getElementById("leadForm");
+      form.querySelector('[name="_t"]').value = Date.now();
       const card = document.getElementById("formCard");
       const submitBtn = document.getElementById("submitBtn");
 

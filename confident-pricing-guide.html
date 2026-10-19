@@ -261,6 +261,8 @@
             <form id="leadForm" novalidate>
               <input type="hidden" name="lead_magnet" value="The Confident Pricing Guide" />
               <input type="hidden" name="segment" value="6a5cb163452d7cd5502fae2e" />
+              <div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+              <input type="hidden" name="_t" value="" />
 
               <div class="field" id="f-name">
                 <label for="first_name">First name</label>
@@ -377,6 +379,7 @@
       const GUIDE_URL = "https://www.notion.so/373f96051aee8125beb6facabaaa6e7a";
 
       const form = document.getElementById("leadForm");
+      form.querySelector('[name="_t"]').value = Date.now();
       const card = document.getElementById("formCard");
       const submitBtn = document.getElementById("submitBtn");
 

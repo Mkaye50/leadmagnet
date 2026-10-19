@@ -96,6 +96,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "A valid email is required" });
   }
 
+  // Honeypot check: bots fill the hidden "website" field; real users never see it.
+  if (body.website) {
+    return res.status(200).json({ ok: true });
+  }
+
+  // Timing check: if the form was submitted less than 2 seconds after page load,
+  // it's almost certainly a bot.
+  const formLoadTime = Number(body._t);
+  if (formLoadTime && Date.now() - formLoadTime < 2000) {
+    return res.status(200).json({ ok: true });
+  }
+
   const auth = "Basic " + Buffer.from(`${apiKey}:`).toString("base64");
   const headers = { Authorization: auth, "Content-Type": "application/json" };
 
