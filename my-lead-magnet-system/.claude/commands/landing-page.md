@@ -40,7 +40,7 @@ every new lead magnet work immediately after deploy.
 
 Requirements:
 - Pure CSS with variables (no Tailwind CDN)
-- DM Serif Display (titles/headings, single 400 weight) + Inter (body, nav, buttons), via Google Fonts
+- Instrument Serif (titles/headings, 400 weight, italic for emphasis) + Instrument Sans (body/nav/buttons, 400/600) + Caveat (handwriting accent), via Google Fonts
 - Full light/dark theme support with localStorage persistence
 - Accessible: contrast ratios, alt text, focus states
 

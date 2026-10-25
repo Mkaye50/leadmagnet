@@ -64,11 +64,26 @@ transformation · boss babe · manifest
 
 ## Typography
 Load via Google Fonts and assign by role:
-- **Headlines (h1/h2/h3):** DM Serif Display (single 400 weight — don't bold it)
-- **Body text:** Inter
-- **Nav, buttons, labels, captions:** Inter
+- **Headlines (h1/h2/h3):** Instrument Serif (400 weight; use italic for the word you'd say louder)
+- **Body text:** Instrument Sans (400, 600)
+- **Nav, buttons, labels, captions:** Instrument Sans (tracked labels)
+- **Handwriting accent:** Caveat (one short aside per layout, never overuse)
 
-(Previously Cormorant Garamond / Manrope / DM Sans — replaced.)
+(Previously DM Serif Display / Inter — replaced October 2026.)
+
+## Colour palette
+| Name | Hex | Role | Proportion |
+|------|------|------|-----------|
+| Cream | #FBF2E6 | Base, every page | 40% |
+| Brand Blue | #1F4E8C | Text, logo, anchors | 20% |
+| Blush | #F8CFD2 | Soft panels | 20% |
+| Fresh Lime | #DDE88A | Fresh pops | 10% |
+| Aqua | #7FD8D0 | Fresh contrast | 5% |
+| Hot Pink | #E61E73 | CTAs, highlights | 5% |
+
+Rules: max three colours per layout. Text is Blue or Cream. Cream is the
+base (never cold grey). Flat colour blocks only (no gradients). Buttons use
+darkened pink #D81C6D for AA contrast with white text.
 
 ## Tagline
 "Imagine opening your inbox on a Monday and the pipeline is full, and nothing

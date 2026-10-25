@@ -30,41 +30,41 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Instrument+Sans:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap"
     rel="stylesheet"
   />
 
   <style>
     :root {
-      --font-title: "DM Serif Display", Georgia, serif;
-      --font-body: "Inter", system-ui, sans-serif;
-      --font-ui: "Inter", system-ui, sans-serif;
+      --font-title: "Instrument Serif", Georgia, serif;
+      --font-body: "Instrument Sans", system-ui, sans-serif;
+      --font-ui: "Instrument Sans", system-ui, sans-serif;
 
-      --bg: #F8FAFC;          /* soft white — page background / whitespace */
+      --bg: #FBF2E6;          /* cream — base, every page */
       --surface: #ffffff;     /* cards */
-      --surface-2: #EBF2FF;   /* light blue tint — pills / chips */
-      --ink: #2D3748;         /* charcoal — body, subheads, footer */
-      --ink-soft: #2D3748;    /* charcoal — secondary text (mid grey #8896A8 fails AA on white) */
+      --surface-2: #F8CFD2;   /* blush — soft panels / pills */
+      --ink: #1F4E8C;         /* brand blue — body, subheads, footer */
+      --ink-soft: #3B6DA8;    /* lighter blue — secondary text */
       --line: #7FD8D0;        /* aqua — dividers / borders / accents */
-      --brand: #E61E73;       /* pink — buttons, CTAs, links */
+      --brand: #E61E73;       /* hot pink — buttons, CTAs, links */
       --brand-ink: #ffffff;   /* button text */
-      --accent: #7FD8D0;      /* aqua — graphic accents / highlights */
-      --headline: #1F4E8C;    /* blue — headlines, logo, primary brand */
+      --accent: #DDE88A;      /* fresh lime — graphic accents / highlights */
+      --headline: #1F4E8C;    /* brand blue — headlines, logo */
       --ring: rgba(230, 30, 115, 0.45);
-      --shadow: 0 24px 60px rgba(31, 78, 140, 0.12);
+      --shadow: 0 24px 60px rgba(31, 78, 140, 0.08);
     }
 
     [data-theme="dark"] {
       --bg: #0F1B2D;          /* deep navy */
       --surface: #16243A;
       --surface-2: #1E3050;
-      --ink: #E6EDF6;         /* light body text */
-      --ink-soft: #C2CEDD;
+      --ink: #FBF2E6;         /* cream — body text on dark */
+      --ink-soft: #D4C8B8;    /* muted cream */
       --line: #2C4A66;        /* subtle divider */
-      --brand: #E61E73;       /* pink CTAs (white text) */
+      --brand: #E61E73;       /* hot pink CTAs */
       --brand-ink: #ffffff;
-      --accent: #7FD8D0;      /* aqua accents */
-      --headline: #6FB2F0;    /* light blue headlines on dark */
+      --accent: #DDE88A;      /* fresh lime accents */
+      --headline: #7BB8E8;    /* lighter brand blue on dark */
       --ring: rgba(230, 30, 115, 0.55);
       --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     }
@@ -97,7 +97,8 @@
       border-bottom: 1px solid var(--line);
     }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .logo { font-family: var(--font-title); font-size: 24px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+    .logo { font-family: var(--font-title); font-size: 24px; font-weight: 700; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+    .logo-badge { width: 36px; height: 36px; border-radius: 50%; }
     .theme-toggle {
       font-family: var(--font-ui); font-weight: 600; font-size: 14px;
       display: inline-flex; align-items: center; gap: 8px;
@@ -121,9 +122,9 @@
     }
     .trust-bar img { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
     .trust-bar .who { font-family: var(--font-ui); font-size: 15px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .trust-bar .who strong { color: #2D3748; font-weight: 700; }
-    .trust-bar .who .dot { color: #8896A8; margin: 0 6px; }
-    .trust-bar .who .handle { color: #8896A8; }
+    .trust-bar .who strong { color: #1F4E8C; font-weight: 700; }
+    .trust-bar .who .dot { color: #3B6DA8; margin: 0 6px; }
+    .trust-bar .who .handle { color: #3B6DA8; }
 
     .eyebrow { font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.22em; font-size: 12px; font-weight: 700; color: var(--brand); margin: 26px 0 12px; }
     .hero h1 { font-size: clamp(40px, 6vw, 62px); color: var(--ink); }
@@ -216,12 +217,12 @@
     .eyebrow { color: var(--headline); }
     /* Aqua accent circles need a dark glyph to stay readable (not white-on-aqua) */
     .benefits li::before,
-    .form-success .check { color: #2D3748; }
+    .form-success .check { color: #1F4E8C; }
     /* Buttons use a darkened pink #D81C6D so white text passes AA at normal size (4.88:1);
        true brand pink #E61E73 stays on links, accents, and highlights via --brand */
     .submit-btn,
     .cta-card .cta-btn { background: #D81C6D; }
-    /* DM Serif Display ships a single (400) weight — render headings/logo at 400 to avoid faux-bold */
+    /* Instrument Serif: render headings at 400; use italic for emphasis words */
     h1, h2, h3 { font-weight: 400; }
     .logo { font-weight: 400; }
   </style>
@@ -230,7 +231,7 @@
 
   <header class="nav">
     <div class="wrap nav-inner">
-      <a class="logo" href="/">Michal Kaye</a>
+      <a class="logo" href="/"><img src="/mk-badge.svg" alt="MK Creative" class="logo-badge" />Michal Kaye</a>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
         <span class="sun">☀︎ Light</span>
         <span class="moon">☾ Dark</span>
