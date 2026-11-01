@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Where the Money's Leaking | Free Tool</title>
-  <meta name="description" content="A free 2-minute numbers audit for creative and event-based business owners. Enter a handful of real numbers, see your #1 revenue leak, named. No pep talk, just the math." />
+  <meta name="description" content="A free 2-minute numbers audit for business owners who already have clients. Enter a handful of real numbers, see your #1 revenue leak, named. No pep talk, just the math." />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Where the Money's Leaking" />
@@ -252,10 +252,10 @@
 
           <p class="eyebrow">Free Tool</p>
           <h1>Where Is Your Money Actually Leaking?</h1>
-          <p class="subhead">A 2-minute numbers audit for creative and event-based business owners. Enter a handful of real numbers, see your #1 leak, named. No pep talk, just the math.</p>
+          <p class="subhead">A 2-minute numbers audit for business owners who already have clients. Enter a handful of real numbers, see your #1 leak, named. No pep talk, just the math.</p>
 
           <div class="pills">
-            <span class="pill">🔢 4 quick numbers</span>
+            <span class="pill">🔢 5 quick numbers</span>
             <span class="pill">⏱️ 2-minute audit</span>
             <span class="pill">💛 Simple, not complicated</span>
           </div>
@@ -263,7 +263,7 @@
           <ul class="benefits">
             <li>See your current monthly revenue, laid out plainly</li>
             <li>Find out exactly what missed bookings are costing you</li>
-            <li>Know whether your leak is follow-up or your price</li>
+            <li>Know whether your leak is follow-up, pricing, or free extras</li>
             <li>Get a clear next step for whichever one it is</li>
           </ul>
         </div>
@@ -286,6 +286,11 @@
             <div class="field" id="f-bookings">
               <label for="bookings">Of those, how many actually book</label>
               <input type="number" id="bookings" inputmode="decimal" min="0" placeholder="4" />
+            </div>
+
+            <div class="field" id="f-extras">
+              <label for="extras">Extras, add-ons, or discounts you give away monthly ($)</label>
+              <input type="number" id="extras" inputmode="decimal" min="0" placeholder="500" />
             </div>
 
             <div class="field" id="f-goal">
@@ -436,15 +441,20 @@
         const avgPrice = num("avgPrice");
         const inquiries = num("inquiries");
         const bookings = num("bookings");
+        const extras = num("extras");
         const goal = num("goal");
 
         const currentRevenue = bookings * avgPrice;
         const missedBookings = Math.max(0, inquiries - bookings);
         const bookingLeak = missedBookings * avgPrice;
+        const extrasLeak = extras;
         const goalGap = Math.max(0, goal - currentRevenue);
 
         let headline, detail;
-        if (bookingLeak > 0 && bookingLeak >= goalGap) {
+        if (extrasLeak > 0 && extrasLeak >= bookingLeak && extrasLeak >= goalGap) {
+          headline = "Your #1 leak: Free Extras";
+          detail = "You're giving away more than you're losing anywhere else. The money isn't leaking out of your pipeline. It's leaking out of your deliverables.";
+        } else if (bookingLeak > 0 && bookingLeak >= goalGap) {
           headline = "Your #1 leak: Follow-Up, Not Price";
           detail = "Your price isn't the problem right now. Your follow-up is.";
         } else if (goalGap > 0) {
@@ -459,14 +469,14 @@
         resultDetail.innerHTML =
           "Current monthly revenue: <strong>" + fmt(currentRevenue) + "</strong><br>" +
           "Missed bookings this month: <strong>" + missedBookings.toFixed(0) + "</strong>, worth <strong>" + fmt(bookingLeak) + "</strong><br>" +
+          "Free extras given away: <strong>" + fmt(extrasLeak) + "</strong><br>" +
           "Gap to your goal: <strong>" + fmt(goalGap) + "</strong><br><br>" +
           detail;
 
-        // Plain-text version for the Flodesk "Leak Result" custom field,
-        // read by the form submit handler below.
         window.leakResultSummary =
           headline + ". Current monthly revenue " + fmt(currentRevenue) +
           ", missed bookings " + missedBookings.toFixed(0) + " worth " + fmt(bookingLeak) +
+          ", free extras " + fmt(extrasLeak) +
           ", gap to goal " + fmt(goalGap) + ".";
 
         calcBody.style.display = "none";
