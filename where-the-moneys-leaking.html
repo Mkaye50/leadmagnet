@@ -269,9 +269,43 @@
         </div>
 
         <div class="form-card" id="formCard">
-          <div class="form-body" id="calcBody">
+          <!-- Step 1: Email capture (shown first) -->
+          <div id="signupBody">
             <h2>Find your leak</h2>
-            <p class="hint">Real numbers only. This needs actual revenue to audit, so estimates are fine, but zeros won't tell you much.</p>
+            <p class="hint">Drop your name and email to unlock the calculator. Takes 2 minutes, and you'll get the playbook for your leak type too.</p>
+
+            <form id="leadForm" novalidate>
+              <input type="hidden" name="lead_magnet" value="6a5cb1797c5625662ff97d9c" />
+              <input type="hidden" name="segment" value="6a5cb1797c5625662ff97d9c" />
+              <div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+              <input type="hidden" name="_t" value="" />
+
+              <div class="field" id="f-name">
+                <label for="first_name">First name</label>
+                <input type="text" id="first_name" name="first_name" autocomplete="given-name" placeholder="Jordan" required />
+                <p class="error-text">Please enter your first name.</p>
+              </div>
+
+              <div class="field" id="f-email">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+                <p class="error-text">Please enter a valid email.</p>
+              </div>
+
+              <button type="submit" class="submit-btn" id="submitBtn">Unlock the calculator</button>
+
+              <div class="micro-trust">
+                <span>🔒 No spam</span>
+                <span>↩︎ Unsubscribe anytime</span>
+                <span>⚡ Instant access</span>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 2: Calculator (shown after signup) -->
+          <div id="calcBody" style="display:none">
+            <h2>Now enter your numbers</h2>
+            <p class="hint">Real numbers only. Estimates are fine, but zeros won't tell you much.</p>
 
             <div class="field" id="f-avgPrice">
               <label for="avgPrice">Average price per client or project ($)</label>
@@ -301,52 +335,18 @@
             <button type="button" class="submit-btn" id="calcBtn">Show me my leak</button>
 
             <div class="micro-trust">
-              <span>🔒 No spam</span>
-              <span>🧮 Free, no email needed</span>
+              <span>🧮 Free calculator</span>
               <span>⚡ Instant result</span>
             </div>
           </div>
 
+          <!-- Step 3: Result (shown after calculator runs) -->
           <div class="calc-result" id="calcResult">
             <div class="result-box">
               <div class="result-headline" id="resultHeadline"></div>
               <div class="result-detail" id="resultDetail"></div>
             </div>
-
-            <p class="capture-lead">Want the exact playbook for your leak type, plus what to do next? Drop your email and I'll send it over.</p>
-
-            <form id="leadForm" novalidate>
-              <input type="hidden" name="lead_magnet" value="6a5cb1797c5625662ff97d9c" />
-              <input type="hidden" name="segment" value="6a5cb1797c5625662ff97d9c" />
-              <div style="position:absolute;left:-9999px" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
-              <input type="hidden" name="_t" value="" />
-
-              <div class="field" id="f-name">
-                <label for="first_name">First name</label>
-                <input type="text" id="first_name" name="first_name" autocomplete="given-name" placeholder="Jordan" required />
-                <p class="error-text">Please enter your first name.</p>
-              </div>
-
-              <div class="field" id="f-email">
-                <label for="email">Email address</label>
-                <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required />
-                <p class="error-text">Please enter a valid email.</p>
-              </div>
-
-              <button type="submit" class="submit-btn" id="submitBtn">Send me the playbook</button>
-
-              <div class="micro-trust">
-                <span>🔒 No spam</span>
-                <span>↩︎ Unsubscribe anytime</span>
-                <span>⚡ Instant delivery</span>
-              </div>
-            </form>
-          </div>
-
-          <div class="form-success" role="status" aria-live="polite">
-            <div class="check">✓</div>
-            <h2>You're in!</h2>
-            <p>Your guide is on its way to your inbox. If you don't see it in a few minutes, check your spam or promotions folder.</p>
+            <p class="capture-lead">Your playbook with the exact steps for your leak type is on its way to your inbox.</p>
             <a class="guide-link" href="https://www.notion.so/3a2f96051aee8147b53df92878aa3cd0" target="_blank" rel="noopener">Open your playbook now →</a>
           </div>
         </div>
@@ -422,16 +422,69 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ---------- Calculator: pure client-side, no backend, no email needed ----------
+    // ---------- Step 1: Email signup -> unlock calculator ----------
     (function () {
-      const calcBody = document.getElementById("calcBody");
-      const calcResult = document.getElementById("calcResult");
-      const calcBtn = document.getElementById("calcBtn");
-      const resultHeadline = document.getElementById("resultHeadline");
-      const resultDetail = document.getElementById("resultDetail");
+      var FORM_ENDPOINT = "/api/subscribe";
+      var form = document.getElementById("leadForm");
+      form.querySelector('[name="_t"]').value = Date.now();
+      var signupBody = document.getElementById("signupBody");
+      var calcBody = document.getElementById("calcBody");
+      var submitBtn = document.getElementById("submitBtn");
+
+      window._subEmail = "";
+      window._subTimestamp = "";
+
+      function setInvalid(fieldId, invalid) {
+        document.getElementById(fieldId).classList.toggle("invalid", invalid);
+      }
+      function validEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var name = form.first_name.value.trim();
+        var email = form.email.value.trim();
+        var nameBad = name.length === 0;
+        var emailBad = !validEmail(email);
+        setInvalid("f-name", nameBad);
+        setInvalid("f-email", emailBad);
+        if (nameBad || emailBad) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+        try {
+          var payload = Object.fromEntries(new FormData(form));
+          var res = await fetch(FORM_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Subscribe failed: " + res.status);
+          window._subEmail = email;
+          window._subTimestamp = payload._t;
+          signupBody.style.display = "none";
+          calcBody.style.display = "block";
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Unlock the calculator";
+          alert("Something went wrong. Please try again.");
+          console.error(err);
+        }
+      });
+    })();
+
+    // ---------- Step 2: Calculator -> show result + send leak type to Flodesk ----------
+    (function () {
+      var FORM_ENDPOINT = "/api/subscribe";
+      var calcBody = document.getElementById("calcBody");
+      var calcResult = document.getElementById("calcResult");
+      var calcBtn = document.getElementById("calcBtn");
+      var resultHeadline = document.getElementById("resultHeadline");
+      var resultDetail = document.getElementById("resultDetail");
 
       function num(id) {
-        const v = parseFloat(document.getElementById(id).value);
+        var v = parseFloat(document.getElementById(id).value);
         return isNaN(v) || v < 0 ? 0 : v;
       }
       function fmt(n) {
@@ -439,19 +492,19 @@
       }
 
       calcBtn.addEventListener("click", function () {
-        const avgPrice = num("avgPrice");
-        const inquiries = num("inquiries");
-        const bookings = num("bookings");
-        const extras = num("extras");
-        const goal = num("goal");
+        var avgPrice = num("avgPrice");
+        var inquiries = num("inquiries");
+        var bookings = num("bookings");
+        var extras = num("extras");
+        var goal = num("goal");
 
-        const currentRevenue = bookings * avgPrice;
-        const missedBookings = Math.max(0, inquiries - bookings);
-        const bookingLeak = missedBookings * avgPrice;
-        const extrasLeak = extras;
-        const goalGap = Math.max(0, goal - currentRevenue);
+        var currentRevenue = bookings * avgPrice;
+        var missedBookings = Math.max(0, inquiries - bookings);
+        var bookingLeak = missedBookings * avgPrice;
+        var extrasLeak = extras;
+        var goalGap = Math.max(0, goal - currentRevenue);
 
-        let headline, detail;
+        var headline, detail;
         if (extrasLeak > 0 && extrasLeak >= bookingLeak && extrasLeak >= goalGap) {
           headline = "Your #1 leak: Free Extras";
           detail = "You're giving away more than you're losing anywhere else. The money isn't leaking out of your pipeline. It's leaking out of your deliverables.";
@@ -474,61 +527,25 @@
           "Gap to your goal: <strong>" + fmt(goalGap) + "</strong><br><br>" +
           detail;
 
-        window.leakResultSummary =
-          headline + ". Current monthly revenue " + fmt(currentRevenue) +
-          ", missed bookings " + missedBookings.toFixed(0) + " worth " + fmt(bookingLeak) +
-          ", free extras " + fmt(extrasLeak) +
-          ", gap to goal " + fmt(goalGap) + ".";
-
         calcBody.style.display = "none";
         calcResult.style.display = "block";
-      });
-    })();
 
-    // ---------- Form: validate + POST to /api/subscribe + success state ----------
-    (function () {
-      const FORM_ENDPOINT = "/api/subscribe";
-      const GUIDE_URL = "https://www.notion.so/3a2f96051aee8147b53df92878aa3cd0";
-
-      const form = document.getElementById("leadForm");
-      form.querySelector('[name="_t"]').value = Date.now();
-      const card = document.getElementById("formCard");
-      const submitBtn = document.getElementById("submitBtn");
-
-      function setInvalid(fieldId, invalid) {
-        document.getElementById(fieldId).classList.toggle("invalid", invalid);
-      }
-      function validEmail(value) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      }
-
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const name = form.first_name.value.trim();
-        const email = form.email.value.trim();
-        const nameBad = name.length === 0;
-        const emailBad = !validEmail(email);
-        setInvalid("f-name", nameBad);
-        setInvalid("f-email", emailBad);
-        if (nameBad || emailBad) return;
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Sending…";
-        try {
-          const payload = Object.fromEntries(new FormData(form));
-          if (window.leakResultSummary) payload.leak_result = window.leakResultSummary;
-          const res = await fetch(FORM_ENDPOINT, {
+        var leakSummary =
+          headline + ". Revenue " + fmt(currentRevenue) +
+          ", missed bookings " + missedBookings.toFixed(0) + " worth " + fmt(bookingLeak) +
+          ", free extras " + fmt(extrasLeak) +
+          ", gap " + fmt(goalGap) + ".";
+        if (window._subEmail) {
+          fetch(FORM_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (!res.ok) throw new Error("Subscribe failed: " + res.status);
-          card.classList.add("done");
-        } catch (err) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Send me the playbook";
-          alert("Something went wrong sending the form. Please try again.");
-          console.error(err);
+            body: JSON.stringify({
+              email: window._subEmail,
+              segment: "6a5cb1797c5625662ff97d9c",
+              leak_result: leakSummary,
+              _t: window._subTimestamp
+            }),
+          }).catch(function () {});
         }
       });
     })();
